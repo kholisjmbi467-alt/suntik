@@ -21,17 +21,19 @@
           }
         }
       }
-    };
+    }
   </script>
 
   <style>
-    /* small custom styles */
-    .service-btn { @apply flex items-center gap-3 px-4 py-3 rounded-xl bg-white shadow hover:shadow-lg transition; }
-    .service-btn .icon { @apply w-10 h-10 flex items-center justify-center rounded-lg text-white; }
-    /* 3D card lift */
+    /* Small custom helpers */
     .card-3d { transform-style: preserve-3d; perspective: 1000px; }
     .card-inner { transition: transform .35s cubic-bezier(.2,.9,.3,1), box-shadow .35s; transform-origin:center; }
-    .card-3d:hover .card-inner { transform: translateY(-10px) rotateX(2deg) translateZ(12px); box-shadow: 0 24px 50px rgba(0,0,0,0.12); }
+    .card-3d:hover .card-inner { transform: translateY(-8px) rotateX(1.5deg) translateZ(8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
+    .service-row:hover { background: rgba(91,33,182,0.03); }
+    /* small responsive tweak */
+    @media (max-width: 768px) {
+      .sticky-top-md { position: static; }
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800 antialiased">
@@ -41,7 +43,7 @@
     <div class="max-w-7xl mx-auto flex items-center justify-between px-5 py-3">
       <div class="flex items-center gap-3">
         <!-- Logo (file must be in same folder) -->
-        <img src="Hitam Putih Sederhana Komunitas Burung Logo_20251108_222453_0000.png" alt="Zayen Hosting Logo" class="h-12 w-12 object-contain rounded-md bg-white/10 p-1">
+        <img id="brandLogo" src="Hitam Putih Sederhana Komunitas Burung Logo_20251108_222453_0000.png" alt="Zayen Hosting Logo" class="h-12 w-12 object-contain rounded-md bg-white/10 p-1">
         <div>
           <div class="font-bold text-lg">Zayen Hosting</div>
           <div class="text-sm opacity-80">Professional Social Media Services</div>
@@ -58,55 +60,22 @@
     </div>
   </header>
 
-  <!-- NAV + LAYOUT -->
+  <!-- LAYOUT -->
   <div class="max-w-7xl mx-auto px-5 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
 
-    <!-- LEFT: Vertical service menu -->
+    <!-- LEFT: Platform menu vertical -->
     <aside class="md:col-span-1 space-y-4">
-      <div class="bg-white rounded-2xl p-4 shadow"> 
-        <h4 class="text-indigo-600 font-semibold mb-3">Jenis Layanan</h4>
-
-        <!-- Vertical Buttons with icons -->
-        <div class="space-y-3">
-          <button class="service-btn w-full justify-start" onclick="showServices('whatsapp')">
-            <div class="icon bg-green-500">📱</div>
-            <div class="text-left">
-              <div class="font-medium">WhatsApp</div>
-              <div class="text-xs text-gray-500">Member & Reaction</div>
-            </div>
-          </button>
-
-          <button class="service-btn w-full justify-start" onclick="showServices('tiktok')">
-            <div class="icon bg-black">🎵</div>
-            <div class="text-left">
-              <div class="font-medium">TikTok</div>
-              <div class="text-xs text-gray-500">Views, Like, Followers</div>
-            </div>
-          </button>
-
-          <button class="service-btn w-full justify-start" onclick="showServices('instagram')">
-            <div class="icon bg-gradient-to-tr from-pink-500 to-yellow-400">📸</div>
-            <div class="text-left">
-              <div class="font-medium">Instagram</div>
-              <div class="text-xs text-gray-500">Followers & Likes</div>
-            </div>
-          </button>
-
-          <button class="service-btn w-full justify-start" onclick="showServices('facebook')">
-            <div class="icon bg-blue-600">f</div>
-            <div class="text-left">
-              <div class="font-medium">Facebook</div>
-              <div class="text-xs text-gray-500">Followers & Engagement</div>
-            </div>
-          </button>
+      <div class="bg-white rounded-2xl p-4 shadow">
+        <h4 class="text-indigo-600 font-semibold mb-3">Pilih Platform</h4>
+        <div id="platformList" class="space-y-3">
+          <!-- JS will render platform buttons here -->
         </div>
       </div>
 
-      <!-- Promo / info card -->
       <div class="bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-2xl p-6 shadow-lg card-3d">
         <div class="card-inner">
           <h5 class="text-lg font-semibold">Promo Paket Bulanan</h5>
-          <p class="text-sm mt-2 opacity-90">Dapatkan diskon khusus untuk paket besar. Hubungi admin untuk penawaran custom.</p>
+          <p class="text-sm mt-2 opacity-90">Diskon untuk paket besar. Hubungi admin untuk penawaran khusus & reseller.</p>
           <div class="mt-4">
             <button onclick="contactAdmin()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg">Hubungi Admin</button>
           </div>
@@ -114,107 +83,67 @@
       </div>
     </aside>
 
-    <!-- CENTER: Services area -->
+    <!-- CENTER: Step 1 & Step 2 panels -->
     <section class="md:col-span-2 space-y-6">
 
-      <!-- Breadcrumb / header -->
       <div class="flex items-center justify-between">
         <h2 class="text-2xl font-bold">Layanan</h2>
-        <p class="text-sm text-gray-500">Pilih layanan dari menu di kiri, masukkan jumlah, lalu tambahkan ke keranjang.</p>
+        <p class="text-sm text-gray-500">Pilih platform → lalu pilih jenis layanan dari platform tersebut.</p>
       </div>
 
-      <!-- SERVICES: each group will be toggled -->
-      <div id="servicesWrap" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+      <!-- STEP 1: (Platform) summary (read-only) -->
+      <div id="step1" class="bg-white rounded-2xl p-4 shadow">
+        <div class="text-sm text-gray-600">Langkah 1: Pilih platform di kolom kiri. Platform yang dipilih muncul di sini.</div>
+        <div id="selectedPlatform" class="mt-3 text-lg font-semibold text-indigo-600">Belum memilih platform</div>
+      </div>
 
-        <!-- WhatsApp -->
-        <div id="whatsapp" class="service-group hidden space-y-4">
-          <div class="bg-white rounded-2xl p-5 shadow card-3d">
-            <div class="card-inner">
-              <h3 class="text-lg font-semibold text-indigo-600">Member Saluran WhatsApp</h3>
-              <p class="text-sm text-gray-500 mt-1">Rp 38 | Min: 10 | Max: 50.000</p>
-              <div class="mt-4 flex gap-2 items-center">
-                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="50000">
-                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
-              </div>
-              <div class="text-red-500 text-sm mt-2 warning"></div>
-            </div>
+      <!-- STEP 2: services table (renders based on platform) -->
+      <div id="servicesPanel" class="bg-white rounded-2xl p-4 shadow space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-sm text-gray-500">Langkah 2: Pilih jenis layanan</div>
+            <div id="servicesTitle" class="text-lg font-semibold">Silakan pilih platform</div>
           </div>
-
-          <div class="bg-white rounded-2xl p-5 shadow card-3d">
-            <div class="card-inner">
-              <h3 class="text-lg font-semibold text-indigo-600">Post Reaction WhatsApp</h3>
-              <p class="text-sm text-gray-500 mt-1">Rp 35 | Min: 10 | Max: 50.000</p>
-              <div class="mt-4 flex gap-2 items-center">
-                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="50000">
-                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
-              </div>
-              <div class="text-red-500 text-sm mt-2 warning"></div>
-            </div>
-          </div>
+          <div id="serviceCount" class="text-sm text-gray-500"></div>
         </div>
 
-        <!-- TikTok -->
-        <div id="tiktok" class="service-group hidden space-y-4">
-          <div class="bg-white rounded-2xl p-5 shadow card-3d">
-            <div class="card-inner">
-              <h3 class="text-lg font-semibold text-indigo-600">TikTok Views</h3>
-              <p class="text-sm text-gray-500 mt-1">Rp 8 | Min: 100</p>
-              <div class="mt-4 flex gap-2 items-center">
-                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="100" data-max="2147483647">
-                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
-              </div>
-              <div class="text-red-500 text-sm mt-2 warning"></div>
-            </div>
-          </div>
-
-          <div class="bg-white rounded-2xl p-5 shadow card-3d">
-            <div class="card-inner">
-              <h3 class="text-lg font-semibold text-indigo-600">TikTok Like</h3>
-              <p class="text-sm text-gray-500 mt-1">Rp 8 | Min: 10 | Max: 30.000</p>
-              <div class="mt-4 flex gap-2 items-center">
-                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="30000">
-                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
-              </div>
-              <div class="text-red-500 text-sm mt-2 warning"></div>
-            </div>
-          </div>
+        <!-- Table / list of services -->
+        <div class="overflow-x-auto">
+          <table id="servicesTable" class="min-w-full text-sm">
+            <thead>
+              <tr class="text-left text-xs text-gray-500">
+                <th class="py-2 px-3">Jenis Layanan</th>
+                <th class="py-2 px-3">Harga (Rp)</th>
+                <th class="py-2 px-3">Min</th>
+                <th class="py-2 px-3">Max</th>
+                <th class="py-2 px-3">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="servicesBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
         </div>
 
-        <!-- Instagram -->
-        <div id="instagram" class="service-group hidden space-y-4">
-          <div class="bg-white rounded-2xl p-5 shadow card-3d">
-            <div class="card-inner">
-              <h3 class="text-lg font-semibold text-indigo-600">Instagram Followers</h3>
-              <p class="text-sm text-gray-500 mt-1">Rp 20 | Min: 10 | Max: 100.000</p>
-              <div class="mt-4 flex gap-2 items-center">
-                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="100000">
-                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
-              </div>
-              <div class="text-red-500 text-sm mt-2 warning"></div>
+        <!-- Detail card: muncul setelah klik layanan -->
+        <div id="serviceDetail" class="hidden bg-gradient-to-br from-white to-white rounded-2xl p-4 shadow card-3d">
+          <div class="card-inner flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <div>
+              <div id="detailName" class="text-lg font-semibold text-indigo-600"></div>
+              <div id="detailPrice" class="text-sm text-gray-600 mt-1"></div>
             </div>
+            <div class="flex items-center gap-3 mt-2 sm:mt-0">
+              <input id="detailQty" type="number" min="1" placeholder="Jumlah" class="w-40 border rounded-lg px-3 py-2" />
+              <button id="addToCartBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg">Tambahkan ke Keranjang</button>
+            </div>
+            <div id="detailWarning" class="text-sm text-red-500 mt-2 sm:mt-0"></div>
           </div>
         </div>
-
-        <!-- Facebook -->
-        <div id="facebook" class="service-group hidden space-y-4">
-          <div class="bg-white rounded-2xl p-5 shadow card-3d">
-            <div class="card-inner">
-              <h3 class="text-lg font-semibold text-indigo-600">Facebook Followers</h3>
-              <p class="text-sm text-gray-500 mt-1">Rp 10 | Min: 10 | Max: 500.000</p>
-              <div class="mt-4 flex gap-2 items-center">
-                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="500000">
-                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
-              </div>
-              <div class="text-red-500 text-sm mt-2 warning"></div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </section>
 
     <!-- RIGHT: Cart + Payment chooser -->
-    <aside class="md:col-span-1 sticky top-28 space-y-4">
+    <aside class="md:col-span-1 sticky top-28 space-y-4 sticky-top-md">
 
       <!-- Keranjang -->
       <div id="cartCard" class="bg-white rounded-2xl p-5 shadow-lg">
@@ -229,20 +158,19 @@
         <button id="checkoutBtn" onclick="openPayment()" class="mt-4 w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-2 rounded-lg disabled:opacity-50" disabled>Checkout</button>
       </div>
 
-      <!-- PAYMENT MODAL (hidden, styled as card) -->
+      <!-- PAYMENT: tiles (hidden until checkout) -->
       <div id="paymentCard" class="hidden bg-white rounded-2xl p-5 shadow-lg">
         <h4 class="font-semibold text-lg">Pilih Metode Pembayaran</h4>
-        <p class="text-sm text-gray-500 mt-1">Klik salah satu metode untuk lanjut ke WhatsApp checkout</p>
+        <p class="text-sm text-gray-500 mt-1">Klik metode untuk lanjut ke WhatsApp checkout</p>
 
         <div class="mt-4 grid grid-cols-1 gap-3">
-          <!-- Each tile includes a small logo (emoji fallback) and label -->
           <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('OVO')">
             <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Ovo_Logo.png" alt="OVO" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
             <div class="text-left">
               <div class="font-medium">OVO</div>
-              <div class="text-xs text-gray-500">Transfer / Dompet Digital</div>
+              <div class="text-xs text-gray-500">Dompet Digital</div>
             </div>
-            <div class="ml-auto text-sm text-gray-600">Logo</div>
+            <div class="ml-auto text-sm text-gray-600">Transfer</div>
           </button>
 
           <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('DANA')">
@@ -251,7 +179,7 @@
               <div class="font-medium">DANA</div>
               <div class="text-xs text-gray-500">Dompet Digital</div>
             </div>
-            <div class="ml-auto text-sm text-gray-600">Logo</div>
+            <div class="ml-auto text-sm text-gray-600">Transfer</div>
           </button>
 
           <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('QRIS')">
@@ -260,7 +188,7 @@
               <div class="font-medium">QRIS</div>
               <div class="text-xs text-gray-500">Scan & Bayar</div>
             </div>
-            <div class="ml-auto text-sm text-gray-600">Logo</div>
+            <div class="ml-auto text-sm text-gray-600">Scan</div>
           </button>
         </div>
 
@@ -272,20 +200,252 @@
     </aside>
   </div>
 
-  <!-- FOOTER -->
   <footer class="mt-10 py-6 bg-white text-center text-sm text-gray-500">
     © <span id="year"></span> Zayen Hosting — All rights reserved.
   </footer>
 
-  <!-- SCRIPTS -->
   <script>
-    // Basic app state
+    // ===== Data: platform -> services (you provided Facebook items) =====
+    const data = {
+      whatsapp: {
+        label: 'WhatsApp',
+        icon: '📱',
+        services: [
+          { name: 'Member Saluran WhatsApp', price: 38, min: 10, max: 50000 },
+          { name: 'Post Reaction WhatsApp', price: 35, min: 10, max: 50000 }
+        ]
+      },
+      tiktok: {
+        label: 'TikTok',
+        icon: '🎵',
+        services: [
+          { name: 'TikTok Views', price: 8, min: 100, max: 2147483647 },
+          { name: 'TikTok Like', price: 8, min: 10, max: 30000 }
+        ]
+      },
+      instagram: {
+        label: 'Instagram',
+        icon: '📸',
+        services: [
+          { name: 'Instagram Followers', price: 20, min: 10, max: 100000 },
+          { name: 'Instagram Likes', price: 6, min: 10, max: 50000 }
+        ]
+      },
+      facebook: {
+        label: 'Facebook',
+        icon: 'f',
+        services: [
+          // <-- user-specified items exactly as provided -->
+          { name: 'Facebook Like Post', price: 8, min: 50, max: 50000 },
+          { name: 'Facebook Video Views', price: 3, min: 100, max: 10000000 },
+          { name: 'Facebook Reels Views', price: 3, min: 100, max: 10000000 }
+        ]
+      }
+    };
+
+    // ===== App state =====
+    let selectedPlatform = null;
+    let selectedService = null;
     const cart = [];
 
-    // Show current year
-    document.getElementById('year').textContent = new Date().getFullYear();
+    // ===== UI references =====
+    const platformList = document.getElementById('platformList');
+    const selectedPlatformEl = document.getElementById('selectedPlatform');
+    const servicesTitle = document.getElementById('servicesTitle');
+    const servicesBody = document.getElementById('servicesBody');
+    const serviceCount = document.getElementById('serviceCount');
+    const serviceDetail = document.getElementById('serviceDetail');
+    const detailName = document.getElementById('detailName');
+    const detailPrice = document.getElementById('detailPrice');
+    const detailQty = document.getElementById('detailQty');
+    const addToCartBtn = document.getElementById('addToCartBtn');
+    const detailWarning = document.getElementById('detailWarning');
+    const cartItems = document.getElementById('cartItems');
+    const cartTotal = document.getElementById('cartTotal');
+    const checkoutBtn = document.getElementById('checkoutBtn');
+    const paymentCard = document.getElementById('paymentCard');
 
-    // Theme toggle
+    // ===== Init platforms list =====
+    function renderPlatforms() {
+      platformList.innerHTML = '';
+      for (const key of Object.keys(data)) {
+        const p = data[key];
+        const btn = document.createElement('button');
+        btn.className = 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white shadow hover:shadow-lg transition w-full';
+        btn.innerHTML = `
+          <div class="w-10 h-10 flex items-center justify-center rounded-lg text-white" style="background: linear-gradient(135deg,#7c3aed,#06b6d4)">${p.icon}</div>
+          <div class="text-left">
+            <div class="font-medium">${p.label}</div>
+            <div class="text-xs text-gray-500">${p.services.length} layanan</div>
+          </div>
+        `;
+        btn.onclick = () => selectPlatform(key);
+        platformList.appendChild(btn);
+      }
+    }
+
+    // ===== Platform selection (Step1) =====
+    function selectPlatform(key) {
+      selectedPlatform = key;
+      selectedService = null;
+      selectedPlatformEl.textContent = `${data[key].label}`;
+      servicesTitle.textContent = `Layanan ${data[key].label}`;
+      serviceCount.textContent = `${data[key].services.length} pilihan`;
+      renderServicesTable(key);
+      hideDetail();
+      // scroll to services
+      document.getElementById('servicesPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ===== Render services table (Step2) =====
+    function renderServicesTable(key) {
+      const list = data[key].services;
+      servicesBody.innerHTML = '';
+      list.forEach((s, idx) => {
+        const tr = document.createElement('tr');
+        tr.className = 'service-row cursor-pointer';
+        tr.innerHTML = `
+          <td class="py-3 px-3">${s.name}</td>
+          <td class="py-3 px-3">Rp ${s.price}</td>
+          <td class="py-3 px-3">${s.min}</td>
+          <td class="py-3 px-3">${s.max.toLocaleString('id')}</td>
+          <td class="py-3 px-3"><button class="px-3 py-1 bg-indigo-600 text-white rounded-md" data-idx="${idx}">Pilih</button></td>
+        `;
+        // click row button
+        tr.querySelector('button').onclick = (e) => {
+          e.stopPropagation();
+          showServiceDetail(key, idx);
+        };
+        // also row click
+        tr.onclick = () => showServiceDetail(key, idx);
+        servicesBody.appendChild(tr);
+      });
+    }
+
+    // ===== Show service detail & quantity form =====
+    function showServiceDetail(platformKey, serviceIdx) {
+      const svc = data[platformKey].services[serviceIdx];
+      selectedService = { platform: platformKey, ...svc };
+      detailName.textContent = `${svc.name}`;
+      detailPrice.textContent = `Rp ${svc.price} | Min: ${svc.min} | Max: ${svc.max.toLocaleString('id')}`;
+      detailQty.value = svc.min;
+      detailQty.min = svc.min;
+      detailQty.max = svc.max;
+      detailWarning.textContent = '';
+      serviceDetail.classList.remove('hidden');
+      detailQty.focus();
+      // scroll into view
+      serviceDetail.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function hideDetail() {
+      serviceDetail.classList.add('hidden');
+    }
+
+    // ===== Add to cart =====
+    addToCartBtn.addEventListener('click', () => {
+      if (!selectedService) return;
+      const qty = parseInt(detailQty.value || 0);
+      if (isNaN(qty) || qty < selectedService.min) {
+        detailWarning.textContent = `Minimal pembelian ${selectedService.min}`;
+        return;
+      }
+      if (qty > selectedService.max) {
+        detailWarning.textContent = `Maksimal pembelian ${selectedService.max.toLocaleString('id')}`;
+        return;
+      }
+      // find in cart
+      const idx = cart.findIndex(i => i.name === selectedService.name && i.platform === selectedService.platform);
+      const total = qty * selectedService.price;
+      if (idx !== -1) {
+        cart[idx].qty = qty;
+        cart[idx].total = total;
+      } else {
+        cart.push({
+          platform: selectedService.platform,
+          name: selectedService.name,
+          price: selectedService.price,
+          qty, total
+        });
+      }
+      renderCart();
+      // clear detail
+      hideDetail();
+    });
+
+    // ===== Render cart =====
+    function renderCart() {
+      cartItems.innerHTML = '';
+      if (cart.length === 0) {
+        cartItems.innerHTML = '<div class="text-gray-500">Belum ada item</div>';
+        cartTotal.textContent = 'Rp 0';
+        checkoutBtn.disabled = true;
+        return;
+      }
+      let total = 0;
+      cart.forEach((it, idx) => {
+        total += it.total;
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between';
+        div.innerHTML = `
+          <div>
+            <div class="font-medium">${it.name} <span class="text-xs text-gray-500">(${data[it.platform].label}) x${it.qty}</span></div>
+            <div class="text-xs text-gray-500">Rp ${it.price} / unit</div>
+          </div>
+          <div class="text-right">
+            <div class="font-semibold">Rp ${it.total}</div>
+            <button class="text-red-500 text-xs mt-1" onclick="removeItem(${idx})">Hapus</button>
+          </div>
+        `;
+        cartItems.appendChild(div);
+      });
+      cartTotal.textContent = `Rp ${total}`;
+      checkoutBtn.disabled = false;
+    }
+
+    function removeItem(i){
+      cart.splice(i,1);
+      renderCart();
+    }
+
+    // ===== Payment flow =====
+    function openPayment(){
+      if (cart.length === 0) { alert('Keranjang kosong!'); return; }
+      paymentCard.classList.remove('hidden');
+      paymentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    function closePayment(){
+      paymentCard.classList.add('hidden');
+    }
+
+    function completeCheckout(method){
+      if (cart.length === 0) { alert('Keranjang kosong!'); return; }
+      let total = 0;
+      let msg = 'Halo Admin Zayen Hosting, saya ingin memesan layanan:\\n';
+      cart.forEach(i => {
+        msg += `- ${i.name} (${data[i.platform].label}) x${i.qty} = Rp ${i.total}\\n`;
+        total += i.total;
+      });
+      msg += `Total: Rp ${total}\\nMetode Pembayaran: ${method}\\nMohon konfirmasi dan instruksi pembayaran. Terima kasih.`;
+
+      const wa = '6283153044178';
+      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
+      closePayment();
+    }
+
+    // expose for buttons in markup:
+    window.completeCheckout = completeCheckout;
+    window.openPayment = openPayment;
+    window.closePayment = closePayment;
+
+    // ===== Contact admin =====
+    function contactAdmin(){
+      const wa = '6283153044178';
+      window.open(`https://wa.me/${wa}`, '_blank');
+    }
+    window.contactAdmin = contactAdmin;
+
+    // ===== Theme toggle & logo fallback =====
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
     let dark = false;
@@ -301,143 +461,24 @@
       }
     };
 
-    // Service menu handling
-    function showServices(id) {
-      document.querySelectorAll('.service-group').forEach(s => s.classList.add('hidden'));
-      const el = document.getElementById(id);
-      if (el) el.classList.remove('hidden');
-
-      // scroll to services on small screens
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    // Add to cart handler (button placed next to input)
-    function addToCart(btn){
-      const group = btn.closest('.card-inner') || btn.closest('.service-group');
-      const input = group.querySelector('input[type="number"]');
-      const title = group.querySelector('h3').innerText.trim();
-      const min = parseInt(input.dataset.min || 1);
-      const max = parseInt(input.dataset.max || Number.MAX_SAFE_INTEGER);
-      const qty = parseInt(input.value || 0);
-
-      const warningEl = group.querySelector('.warning');
-      if (isNaN(qty) || qty <= 0) {
-        warningEl && (warningEl.textContent = 'Masukkan jumlah valid.');
-        return;
-      }
-      if (qty < min) { warningEl && (warningEl.textContent = `Minimal ${min}`); return; }
-      if (qty > max) { warningEl && (warningEl.textContent = `Maksimal ${max}`); return; }
-      warningEl && (warningEl.textContent = '');
-
-      // price: read from first small text content (we stored prices visually earlier)
-      // For reliability set pricing table here (mirrors the displayed price)
-      const priceList = {
-        'Member Saluran WhatsApp': 38,
-        'Post Reaction WhatsApp': 35,
-        'TikTok Views': 8,
-        'TikTok Like': 8,
-        'Instagram Followers': 20,
-        'Facebook Followers': 10
-      };
-      const price = priceList[title] || 0;
-
-      // check if item exists
-      const idx = cart.findIndex(i => i.name === title);
-      if (idx !== -1) {
-        cart[idx].qty = qty;
-        cart[idx].total = cart[idx].price * qty;
-      } else {
-        cart.push({ name: title, price, qty, total: price * qty });
-      }
-      renderCart();
-    }
-
-    // Render cart
-    function renderCart(){
-      const itemsWrap = document.getElementById('cartItems');
-      itemsWrap.innerHTML = '';
-      if (cart.length === 0) {
-        itemsWrap.innerHTML = '<div class="text-gray-500">Belum ada item</div>';
-        document.getElementById('cartTotal').textContent = 'Rp 0';
-        document.getElementById('checkoutBtn').disabled = true;
-        return;
-      }
-      let total = 0;
-      cart.forEach((it, index) => {
-        total += it.total;
-        const div = document.createElement('div');
-        div.className = 'flex items-center justify-between';
-        div.innerHTML = `
-          <div>
-            <div class="font-medium">${it.name} <span class="text-xs text-gray-500">x${it.qty}</span></div>
-            <div class="text-xs text-gray-500">Rp ${it.price} / unit</div>
-          </div>
-          <div class="text-right">
-            <div class="font-semibold">Rp ${it.total}</div>
-            <button class="text-red-500 text-xs mt-1" onclick="removeItem(${index})">Hapus</button>
-          </div>
-        `;
-        itemsWrap.appendChild(div);
-      });
-      document.getElementById('cartTotal').textContent = `Rp ${total}`;
-      document.getElementById('checkoutBtn').disabled = false;
-    }
-
-    function removeItem(i){
-      cart.splice(i,1);
-      renderCart();
-    }
-
-    // Payment card handlers (no typing)
-    function openPayment(){
-      document.getElementById('paymentCard').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    function closePayment(){
-      document.getElementById('paymentCard').classList.add('hidden');
-    }
-
-    // completeCheckout -> open WhatsApp with message summary and selected method
-    function completeCheckout(method){
-      if (cart.length === 0) { alert('Keranjang kosong!'); return; }
-
-      let total = 0;
-      let msg = `Halo Admin Zayen Hosting, saya ingin memesan layanan:\n`;
-      cart.forEach(i => {
-        msg += `- ${i.name} x${i.qty} = Rp ${i.total}\n`;
-        total += i.total;
-      });
-      msg += `Total: Rp ${total}\nMetode Pembayaran: ${method}\nMohon konfirmasi. Terima kasih.`;
-
-      // You can change the WA number here
-      const wa = '6283153044178';
-      const url = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
-      window.open(url, '_blank');
-
-      // small UX: close payment card
-      closePayment();
-    }
-
-    // contact admin quick link
-    function contactAdmin(){
-      const wa = '6283153044178';
-      window.open(`https://wa.me/${wa}`, '_blank');
-    }
-
-    // Initialize: show default services (WhatsApp)
-    showServices('whatsapp');
-
-    // Responsive: ensure logo loads — if not, show fallback text
+    // logo fallback if file missing
     window.addEventListener('load', () => {
-      const img = document.querySelector('header img');
+      const img = document.getElementById('brandLogo');
       img.onerror = function(){
-        // fallback: show brand initials
         const wrapper = document.createElement('div');
         wrapper.className = 'h-12 w-12 rounded-md bg-white/10 flex items-center justify-center text-white font-bold';
         wrapper.innerText = 'ZH';
         img.replaceWith(wrapper);
       };
     });
+
+    // show current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // init app UI
+    renderPlatforms();
+    renderCart();
+    // default: show nothing, user picks platform
   </script>
 </body>
 </html>
