@@ -1,417 +1,641 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Zayen Hosting</title>
-  <style>
-    /* ====== ROOT & GLOBAL ====== */
-    :root {
-      --primary: #7b00ff;
-      --secondary: #007bff;
-      --gradient: linear-gradient(135deg, #7b00ff, #007bff);
-      --card-bg: rgba(255,255,255,0.08);
-      --shadow: 0 10px 25px rgba(0,0,0,0.3);
-    }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Zayen Hosting — Layanan Sosial Media</title>
+<style>
+/* ================= ROOT / THEME ================= */
+:root{
+  --g1:#7a00ff; --g2:#007bff;
+  --gradient: linear-gradient(135deg,var(--g1),var(--g2));
+  --glass: rgba(255,255,255,0.06);
+  --glass-2: rgba(255,255,255,0.12);
+  --card-radius:14px;
+  --shadow: 0 12px 40px rgba(0,0,0,0.18);
+  --accent:#06b6d4;
+  --text-dark:#0b1220;
+  --text-light:#ffffff;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+  background: linear-gradient(180deg,#eef6ff 0%, #f6f9ff 100%);
+  color:var(--text-dark);
+  transition:background .35s,color .35s;
+  -webkit-font-smoothing:antialiased;
+}
+body.dark{
+  background: linear-gradient(180deg,#05060a 0%,#071126 100%);
+  color:var(--text-light);
+}
 
-    body {
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-      background: #f4f6ff;
-      color: #111;
-      transition: background 0.5s, color 0.5s;
-      overflow-x: hidden;
-    }
+/* ================= SPLASH / LOADING ================= */
+#splash{
+  position:fixed; inset:0; z-index:9999;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--gradient); color:white; overflow:hidden;
+}
+#splash .logo{
+  width:140px; height:auto; border-radius:12px; box-shadow:0 14px 45px rgba(0,0,0,0.28);
+  animation:logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+#splash .brandText{
+  font-weight:700; font-size:28px; margin-top:18px; opacity:0; letter-spacing:0.6px;
+  animation:brandSlide 7s ease-in-out forwards;
+}
+@keyframes brandSlide{
+  0%{transform:translateX(-110%);opacity:0}
+  20%{transform:translateX(0);opacity:1}
+  60%{transform:translateX(0);opacity:1}
+  100%{transform:translateX(110%);opacity:0}
+}
+.spinner{
+  margin-top:22px; width:46px; height:46px;
+  border-radius:50%; border:5px solid rgba(255,255,255,0.22); border-top-color:rgba(255,255,255,0.95);
+  animation:spin 1.4s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-    body.dark {
-      background: #0d0f1a;
-      color: #eee;
-    }
+/* ================= HEADER ================= */
+header{
+  position:sticky; top:0; z-index:900; display:flex; align-items:center; justify-content:space-between;
+  padding:12px 18px; background:var(--gradient); color:white; box-shadow:var(--shadow);
+}
+.brand{display:flex;align-items:center;gap:12px;font-weight:700}
+.brand img{width:44px;height:44px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.25)}
+.brand .title{font-size:18px}
+.header-actions{display:flex;align-items:center;gap:10px}
+.icon-btn{
+  width:40px;height:40px;border-radius:999px;border:none;background:rgba(255,255,255,0.12);
+  color:white;display:inline-flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;
+  transition:transform .22s, background .22s;
+}
+.icon-btn:hover{transform:scale(1.12);background:rgba(255,255,255,0.22)}
+.device-label{font-size:12px;color:rgba(255,255,255,0.9);margin-left:6px}
 
-    /* ====== SPLASH SCREEN ====== */
-    #splash {
-      position: fixed;
-      inset: 0;
-      background: var(--gradient);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      color: #fff;
-      overflow: hidden;
-    }
+/* ================= LAYOUT & SIDEBAR ================= */
+.layout{display:flex;min-height:calc(100vh - 68px)}
+/* Sidebar default (desktop) */
+.sidebar{
+  width:250px;padding:18px;background:var(--glass);backdrop-filter:blur(10px);
+  box-shadow:var(--shadow);position:fixed;top:68px;left:0;bottom:0;overflow:auto;border-radius:0 14px 14px 0;
+}
+.side-section{margin-bottom:18px}
+.side-section h4{margin:0 0 10px 0;color:var(--g1)}
+.side-section ul{list-style:none;padding:0;margin:0}
+.side-section li{
+  background:rgba(255,255,255,0.04);padding:10px 12px;border-radius:10px;margin-bottom:8px;cursor:pointer;
+  transition:all .22s;
+}
+.side-section li:hover{transform:translateX(6px);background:rgba(122,0,255,0.16)}
 
-    #splash img {
-      width: 130px;
-      height: auto;
-      animation: pulse 3s ease-in-out infinite;
-    }
+/* Drawer for phone mode */
+.drawer{
+  position:fixed; top:68px; left:-320px; width:260px; height:calc(100% - 68px);
+  background:var(--glass); padding:18px; box-shadow:var(--shadow); transition:left .28s;
+  z-index:950; border-radius:0 14px 14px 0;
+}
+.drawer.open{left:0}
 
-    @keyframes pulse {
-      0%,100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.08); opacity: 0.9; }
-    }
+/* Main content */
+main{margin-left:270px;flex:1;padding:26px;transition:all .25s}
 
-    #splash h1 {
-      font-size: 2.2rem;
-      margin-top: 20px;
-      opacity: 0;
-      animation: slideText 6s ease-in-out forwards;
-    }
+/* Cards */
+.card{
+  background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);border-radius:14px;padding:18px;margin-bottom:20px;
+  box-shadow:var(--shadow);transition:transform .32s, box-shadow .32s;
+  perspective:900;
+}
+.card:hover{transform:translateY(-6px) rotateY(2deg);box-shadow:0 20px 50px rgba(0,0,0,0.28)}
 
-    @keyframes slideText {
-      0% { transform: translateX(-100%); opacity: 0; }
-      25% { transform: translateX(0); opacity: 1; }
-      60% { transform: translateX(0); opacity: 1; }
-      100% { transform: translateX(100%); opacity: 0; }
-    }
+/* Tables */
+table{width:100%;border-collapse:collapse}
+th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left}
+th{color:var(--g1)}
 
-    .spinner {
-      margin-top: 25px;
-      border: 4px solid rgba(255,255,255,0.3);
-      border-top: 4px solid #fff;
-      border-radius: 50%;
-      width: 45px;
-      height: 45px;
-      animation: spin 1.4s linear infinite;
-    }
+/* Service action area */
+.qty{width:110px;padding:8px;border-radius:8px;border:none}
+.add-btn{background:var(--g1);color:white;border:none;padding:8px 12px;border-radius:10px;cursor:pointer}
+.add-btn:hover{filter:brightness(.95);transform:translateY(-2px)}
 
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
+/* ================= CART ================= */
+.cart-btn{
+  position:fixed; top:86px; right:22px; width:52px;height:52px;border-radius:999px;background:#ff5a3c;color:white;
+  box-shadow:0 8px 30px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;z-index:1000;
+}
+.cart-badge{
+  position:absolute;top:-6px;right:-6px;background:#ffd43b;color:#111;padding:3px 7px;border-radius:999px;font-size:12px;font-weight:700;
+  box-shadow:0 6px 18px rgba(0,0,0,0.18)
+}
+.cart-popup{
+  position:fixed; top:86px; right:86px; width:360px; max-height:70vh; overflow:auto;
+  background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);padding:14px;border-radius:12px;box-shadow:var(--shadow);z-index:1000;display:none;
+}
+.cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.cart-item .remove{background:#ff4d4d;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer}
 
-    /* ====== HEADER ====== */
-    header {
-      background: var(--gradient);
-      color: white;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 25px;
-      box-shadow: var(--shadow);
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+/* Checkout */
+.checkout-btn{display:block;width:100%;margin-top:12px;padding:10px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--g1),var(--g2));color:white;cursor:pointer}
 
-    .brand {
-      display: flex;
-      align-items: center;
-      font-size: 1.3rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-    }
+/* Fly to cart animation element */
+.fly{
+  position:fixed; width:44px;height:44px;border-radius:999px;background:linear-gradient(135deg,#ff7a5a,#ff4268);z-index:2000;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;color:white;font-weight:700;transform-origin:center;
+  transition:transform .8s cubic-bezier(.2,.9,.3,1),opacity .8s;
+}
 
-    .brand img {
-      width: 45px;
-      height: 45px;
-      border-radius: 50%;
-      margin-right: 10px;
-      box-shadow: var(--shadow);
-    }
+/* ================= ORDER POPUP (onboarding) ================= */
+#orderPopup{
+  position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); display:flex;align-items:center;justify-content:center;z-index:995;
+}
+.popup{
+  background:var(--text-light); color:var(--text-dark); border-radius:12px;padding:22px; max-width:420px; width:92%;
+  box-shadow:var(--shadow); text-align:left;
+}
+.popup h3{margin-top:0}
+.popup .controls{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
+.lang-switch{padding:6px 10px;border-radius:8px;background:var(--glass-2);cursor:pointer;margin-left:auto;}
 
-    .actions {
-      display: flex;
-      gap: 12px;
-    }
+/* ================= DEVICE MODE STYLES (A: manual full) ================= */
+/* Phone mode: single column, sidebar collapsed -> drawer */
+body.device-phone main{margin-left:0;padding:16px}
+body.device-phone .sidebar{display:none}
+body.device-phone .drawer{display:block}
+body.device-phone .card{margin:14px 0}
+body.device-phone table th, body.device-phone table td{font-size:14px}
+body.device-phone .qty{width:120px}
+body.device-phone .add-btn{width:100%}
 
-    .btn-round {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-      font-size: 20px;
-      cursor: pointer;
-      transition: transform 0.3s, background 0.3s;
-    }
+/* Tablet mode: medium layout (sidebar smaller) */
+body.device-tablet .sidebar{width:200px}
+body.device-tablet main{margin-left:220px}
 
-    .btn-round:hover {
-      transform: scale(1.15);
-      background: rgba(255,255,255,0.35);
-    }
+/* Laptop mode (default) */
+body.device-laptop .sidebar{display:block}
+body.device-laptop main{margin-left:270px}
 
-    /* ====== SIDEBAR ====== */
-    .sidebar {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      width: 240px;
-      height: calc(100% - 70px);
-      background: rgba(255,255,255,0.08);
-      backdrop-filter: blur(12px);
-      padding: 20px;
-      overflow-y: auto;
-      box-shadow: var(--shadow);
-    }
+/* ================= RESPONSIVE ================= */
+@media (max-width:900px){
+  .sidebar{display:none}
+  main{margin-left:0;padding:14px}
+  .drawer{left:-320px}
+}
 
-    .sidebar h3 {
-      color: var(--primary);
-      margin-top: 0;
-      font-size: 1rem;
-    }
-
-    .sidebar ul { list-style: none; padding: 0; }
-    .sidebar li {
-      background: var(--card-bg);
-      padding: 10px 15px;
-      border-radius: 10px;
-      margin: 10px 0;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    .sidebar li:hover {
-      background: rgba(123,0,255,0.3);
-      transform: translateX(6px);
-    }
-
-    .sidebar small {
-      color: gray;
-      font-size: 0.8rem;
-      display: block;
-      margin-top: 10px;
-    }
-
-    /* ====== MAIN CONTENT ====== */
-    main {
-      margin-left: 270px;
-      padding: 25px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(15px);
-      border-radius: 18px;
-      padding: 25px;
-      margin-bottom: 25px;
-      box-shadow: var(--shadow);
-      transition: transform 0.4s, box-shadow 0.4s;
-      perspective: 800px;
-    }
-
-    .card:hover {
-      transform: rotateY(4deg) translateY(-6px);
-      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
-
-    th, td {
-      padding: 10px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-
-    th { color: var(--primary); }
-
-    .pay-table img {
-      width: 35px;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-
-    /* ====== POPUP ====== */
-    #orderPopup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9998;
-    }
-
-    #orderPopup .content {
-      background: white;
-      color: black;
-      padding: 35px;
-      border-radius: 15px;
-      max-width: 420px;
-      text-align: center;
-      animation: fadeIn 1s;
-    }
-
-    @keyframes fadeIn {
-      from {opacity: 0; transform: scale(0.9);}
-      to {opacity: 1; transform: scale(1);}
-    }
-
-    .popup-btn {
-      background: var(--gradient);
-      border: none;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 10px;
-      margin: 6px;
-      cursor: pointer;
-      font-weight: 500;
-      box-shadow: var(--shadow);
-      transition: transform 0.3s;
-    }
-
-    .popup-btn:hover { transform: scale(1.05); }
-  </style>
+/* small note text */
+.note{font-size:13px;color:rgba(0,0,0,0.6)}
+body.dark .note{color:rgba(255,255,255,0.7)}
+</style>
 </head>
-<body>
+<body class="device-laptop">
 
-  <!-- SPLASH SCREEN -->
-  <div id="splash">
+<!-- ============== SPLASH ============== -->
+<div id="splash" aria-hidden="true">
+  <img class="logo" src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting Logo">
+  <div class="brandText">Zayen Hosting</div>
+  <div class="spinner" aria-hidden="true"></div>
+</div>
+
+<!-- ============== HEADER ============== -->
+<header>
+  <div class="brand">
     <img src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting">
-    <h1>Zayen Hosting</h1>
-    <div class="spinner"></div>
+    <div class="title">Zayen Hosting</div>
   </div>
 
-  <!-- HEADER -->
-  <header>
-    <div class="brand">
-      <img src="https://files.catbox.moe/wgigcs.png" alt="Logo">
-      Zayen Hosting
+  <div class="header-actions">
+    <!-- device mode: cycles phone/tablet/laptop -->
+    <div style="display:flex;align-items:center;gap:8px">
+      <button id="deviceToggle" class="icon-btn" title="Mode perangkat (klik untuk ganti)">📱</button>
+      <div class="device-label" id="deviceLabel">Phone</div>
     </div>
-    <div class="actions">
-      <button id="deviceBtn" class="btn-round">📱</button>
-      <button id="modeBtn" class="btn-round">🌗</button>
-    </div>
-  </header>
 
-  <!-- SIDEBAR -->
-  <div class="sidebar">
-    <h3>Menu Layanan</h3>
+    <!-- dark/light -->
+    <button id="themeToggle" class="icon-btn" title="Toggle theme">🌗</button>
+
+    <!-- cart button -->
+    <div style="position:relative">
+      <button id="cartButton" class="cart-btn" title="Keranjang">🛒</button>
+      <div id="cartBadge" class="cart-badge" style="display:none">0</div>
+    </div>
+  </div>
+</header>
+
+<!-- Drawer for phone -->
+<div id="drawer" class="drawer" aria-hidden="true">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <strong style="color:var(--g1)">Menu</strong>
+    <button id="closeDrawer" class="icon-btn" style="background:transparent;color:white">✕</button>
+  </div>
+  <div class="side-section">
+    <h4>Menu Layanan</h4>
     <ul>
-      <li onclick="showService('whatsapp')">WhatsApp</li>
-      <li onclick="showService('tiktok')">TikTok</li>
-      <li onclick="showService('instagram')">Instagram</li>
-      <li onclick="showService('facebook')">Facebook</li>
+      <li data-key="whatsapp">WhatsApp</li>
+      <li data-key="tiktok">TikTok</li>
+      <li data-key="instagram">Instagram</li>
+      <li data-key="facebook">Facebook</li>
     </ul>
-
-    <h3>Help Menu</h3>
+  </div>
+  <div class="side-section">
+    <h4>Help Menu</h4>
     <ul>
-      <li onclick="contactAdmin()">Admin 1</li>
+      <li id="drawerAdmin">Admin 1</li>
     </ul>
-    <small>Menu layanan lainnya dapat ditanyakan kepada Admin 1.</small>
+    <small class="note">Menu layanan lainnya dapat ditanyakan kepada Admin 1.</small>
+  </div>
+</div>
+
+<!-- Sidebar (desktop & tablet) -->
+<div class="sidebar" aria-hidden="false">
+  <div class="side-section">
+    <h4>Menu Layanan</h4>
+    <ul id="menuList">
+      <li data-key="whatsapp">WhatsApp</li>
+      <li data-key="tiktok">TikTok</li>
+      <li data-key="instagram">Instagram</li>
+      <li data-key="facebook">Facebook</li>
+    </ul>
   </div>
 
-  <!-- MAIN CONTENT -->
-  <main>
-    <div class="card" id="defaultCard">
-      <h2>Selamat datang di Zayen Hosting</h2>
-      <p>Pilih menu layanan di sebelah kiri untuk mulai membeli.</p>
-    </div>
+  <div class="side-section">
+    <h4>Help Menu</h4>
+    <ul>
+      <li id="adminBtn">Admin 1</li>
+    </ul>
+    <small class="note">Menu layanan lainnya dapat ditanyakan kepada Admin 1.</small>
+  </div>
+</div>
 
-    <div class="card service" id="whatsapp" style="display:none;">
-      <h2>WhatsApp Services</h2>
-      <table>
-        <tr><th>Layanan</th><th>Harga</th><th>Min</th><th>Max</th></tr>
-        <tr><td>Member Saluran WhatsApp</td><td>Rp 38</td><td>10</td><td>50.000</td></tr>
-        <tr><td>Post Reaction WhatsApp</td><td>Rp 35</td><td>10</td><td>50.000</td></tr>
-      </table>
-    </div>
-
-    <div class="card service" id="tiktok" style="display:none;">
-      <h2>TikTok Services</h2>
-      <table>
-        <tr><th>Layanan</th><th>Harga</th><th>Min</th><th>Max</th></tr>
-        <tr><td>TikTok Views</td><td>Rp 8</td><td>100</td><td>2.147.483.647</td></tr>
-        <tr><td>TikTok Like</td><td>Rp 8</td><td>10</td><td>30.000</td></tr>
-        <tr><td>TikTok Followers</td><td>Rp 25</td><td>10</td><td>5.000.000</td></tr>
-        <tr><td>TikTok Favorite/Save</td><td>Rp 20</td><td>100</td><td>3.000</td></tr>
-        <tr><td>TikTok Share</td><td>Rp 3</td><td>10</td><td>2.147.483.647</td></tr>
-      </table>
-    </div>
-
-    <div class="card service" id="instagram" style="display:none;">
-      <h2>Instagram Services</h2>
-      <table>
-        <tr><th>Layanan</th><th>Harga</th><th>Min</th><th>Max</th></tr>
-        <tr><td>Instagram Followers</td><td>Rp 20</td><td>10</td><td>100.000</td></tr>
-        <tr><td>Instagram Save</td><td>Rp 4</td><td>10</td><td>200.000</td></tr>
-        <tr><td>Instagram Repost</td><td>Rp 12</td><td>1</td><td>100.000</td></tr>
-        <tr><td>Instagram Video Views</td><td>Rp 3</td><td>100</td><td>100.000</td></tr>
-      </table>
-    </div>
-
-    <div class="card service" id="facebook" style="display:none;">
-      <h2>Facebook Services</h2>
-      <table>
-        <tr><th>Layanan</th><th>Harga</th><th>Min</th><th>Max</th></tr>
-        <tr><td>Facebook Followers</td><td>Rp 10</td><td>10</td><td>500.000</td></tr>
-        <tr><td>Facebook Like Post</td><td>Rp 8</td><td>50</td><td>50.000</td></tr>
-        <tr><td>Facebook Video Views</td><td>Rp 3</td><td>100</td><td>10.000.000</td></tr>
-        <tr><td>Facebook Reels Views</td><td>Rp 3</td><td>100</td><td>10.000.000</td></tr>
-      </table>
-    </div>
-
-    <div class="card">
-      <h2>Metode Pembayaran</h2>
-      <table class="pay-table">
-        <tr><td><img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/OVO_logo.svg">OVO</td><td>085123231065</td></tr>
-        <tr><td><img src="https://upload.wikimedia.org/wikipedia/commons/5/59/Logo_dana_blue.svg">DANA</td><td>083153044178</td></tr>
-        <tr><td><img src="https://upload.wikimedia.org/wikipedia/commons/5/53/QRIS_logo.svg">QRIS</td><td>Kode QR akan dikirim oleh Admin</td></tr>
-      </table>
-    </div>
-  </main>
-
-  <!-- POPUP -->
-  <div id="orderPopup">
-    <div class="content">
-      <h2>Cara Melakukan Pembelian</h2>
-      <p>Pilih layanan, masukkan jumlah, dan tekan checkout untuk menghubungi admin.</p>
-      <button class="popup-btn" onclick="nextPopup()">English</button>
-      <button class="popup-btn" onclick="closePopup()">Lewati</button>
-    </div>
+<!-- MAIN -->
+<main>
+  <!-- Default welcome -->
+  <div id="welcomeCard" class="card">
+    <h2>Selamat datang di Zayen Hosting</h2>
+    <p>Silakan pilih platform pada <strong>Menu Layanan</strong> untuk melihat jenis layanan dan memulai pemesanan.</p>
   </div>
 
-  <script>
-    // Splash screen timing
-    window.addEventListener('load', () => {
-      setTimeout(() => {
-        document.getElementById('splash').style.display = 'none';
-      }, 6000);
-    });
+  <!-- Service containers (rendered by JS) -->
+  <div id="serviceArea"></div>
 
-    // Theme toggle
-    const modeBtn = document.getElementById('modeBtn');
-    modeBtn.onclick = () => document.body.classList.toggle('dark');
+  <!-- Payment methods card -->
+  <div class="card" id="paymentCard">
+    <h3>Metode Pembayaran</h3>
+    <p class="note">Silakan pilih metode saat checkout. (Logo dihilangkan sesuai permintaan)</p>
+    <table>
+      <tr><td>OVO</td><td>085123231065</td></tr>
+      <tr><td>DANA</td><td>083153044178</td></tr>
+      <tr><td>QRIS</td><td>Kode QR akan dikirim oleh Admin</td></tr>
+    </table>
+  </div>
+</main>
 
-    // Device toggle
-    const deviceBtn = document.getElementById('deviceBtn');
-    const icons = ['📱','💻','📟'];
-    let d = 0;
-    deviceBtn.onclick = () => {
-      d = (d + 1) % icons.length;
-      deviceBtn.textContent = icons[d];
-      deviceBtn.style.transform = 'scale(1.25)';
-      setTimeout(() => deviceBtn.style.transform = 'scale(1)', 250);
-    };
+<!-- CART popup -->
+<div id="cartPopup" class="cart-popup" aria-hidden="true">
+  <h4>Keranjang</h4>
+  <div id="cartItemsWrap"></div>
+  <div style="display:flex;justify-content:space-between;margin-top:10px">
+    <strong>Total:</strong><strong id="cartTotal">Rp 0</strong>
+  </div>
+  <button id="checkoutBtn" class="checkout-btn">Checkout via WhatsApp</button>
+</div>
 
-    // Show service
-    function showService(id) {
-      document.querySelectorAll('.service').forEach(s => s.style.display = 'none');
-      document.getElementById('defaultCard').style.display = 'none';
-      document.getElementById(id).style.display = 'block';
-    }
+<!-- ORDER POPUP (onboarding) -->
+<div id="orderPopup" aria-hidden="true">
+  <div class="popup" role="dialog" aria-modal="true">
+    <div style="display:flex;align-items:center;gap:10px">
+      <strong>Cara Melakukan Pembelian</strong>
+      <div class="lang-switch" id="langSwitch" title="Ganti Bahasa">ID</div>
+    </div>
+    <div id="onboardContent" style="margin-top:12px">
+      <p id="onboardText">Langkah 1 — Pilih platform pada menu layanan, lalu pilih jenis layanan di daftar.</p>
+      <ol style="margin-top:8px;margin-left:18px">
+        <li>Pilih platform</li>
+        <li>Pilih jenis layanan & masukkan jumlah</li>
+        <li>Tambahkan ke keranjang & checkout</li>
+      </ol>
+    </div>
 
-    // Contact admin
-    function contactAdmin() {
-      window.open('https://wa.me/6283153044178', '_blank');
-    }
+    <div class="controls" style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
+      <button id="skipOnboard" class="popup-btn" style="background:#bbb;color:#000">Lewati</button>
+      <button id="nextOnboard" class="popup-btn">Berikutnya</button>
+    </div>
+  </div>
+</div>
 
-    // Popup bilingual
-    function nextPopup() {
-      document.querySelector('#orderPopup h2').innerText = 'Order Guide';
-      document.querySelector('#orderPopup p').innerText = 'Select a service, enter quantity, and press checkout to contact admin.';
-    }
+<script>
+/* ================= DATA: platforms -> services =================
+   All services retained and new ones added per user's input.
+*/
+const PLATFORMS = {
+  whatsapp: {
+    label: 'WhatsApp',
+    icon: '💬',
+    services: [
+      {name:'Member Saluran WhatsApp', price:38, min:10, max:50000},
+      {name:'Post Reaction WhatsApp', price:35, min:10, max:50000}
+    ]
+  },
+  tiktok: {
+    label:'TikTok', icon:'🎵',
+    services:[
+      {name:'TikTok Views', price:8, min:100, max:2147483647},
+      {name:'TikTok Like', price:8, min:10, max:30000},
+      {name:'TikTok Followers', price:25, min:10, max:5000000},
+      {name:'TikTok Favorite/Save', price:20, min:100, max:3000},
+      {name:'TikTok Share', price:3, min:10, max:2147483647}
+    ]
+  },
+  instagram: {
+    label:'Instagram', icon:'📸',
+    services:[
+      {name:'Instagram Followers', price:20, min:10, max:100000},
+      {name:'Instagram Save', price:4, min:10, max:200000},
+      {name:'Instagram Repost', price:12, min:1, max:100000},
+      {name:'Instagram Video Views', price:3, min:100, max:100000}
+    ]
+  },
+  facebook: {
+    label:'Facebook', icon:'📘',
+    services:[
+      {name:'Facebook Followers', price:10, min:10, max:500000},
+      {name:'Facebook Like Post', price:8, min:50, max:50000},
+      {name:'Facebook Video Views', price:3, min:100, max:10000000},
+      {name:'Facebook Reels Views', price:3, min:100, max:10000000}
+    ]
+  }
+};
 
-    function closePopup() {
-      document.getElementById('orderPopup').style.display = 'none';
-    }
-  </script>
+/* ================= APP STATE ================= */
+let cart = []; // {platform,name,price,qty,total}
+let currentPlatform = null;
+const ADMIN_WA = '6283153044178'; // use this WhatsApp number
+
+/* ================= HELPERS ================= */
+function formatRp(num){
+  if(!num) return '0';
+  return new Intl.NumberFormat('id-ID').format(num);
+}
+
+/* ================= RENDER: service area ================= */
+const serviceArea = document.getElementById('serviceArea');
+function renderServiceList(platformKey){
+  currentPlatform = platformKey;
+  const plat = PLATFORMS[platformKey];
+  serviceArea.innerHTML = '';
+  const header = document.createElement('div'); header.className='card';
+  header.innerHTML = `<h2>${plat.icon} ${plat.label} Services</h2>
+    <p class="note">Pilih layanan, masukkan jumlah sesuai minimal/maksimal, lalu tekan "Tambahkan ke Keranjang".</p>`;
+  serviceArea.appendChild(header);
+
+  // table-like cards for each service
+  plat.services.forEach((s, idx) => {
+    const c = document.createElement('div'); c.className='card';
+    c.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+      <div style="flex:1;min-width:220px">
+        <div style="font-weight:600">${s.name}</div>
+        <div class="note">Rp ${formatRp(s.price)} &middot; Min: ${formatRp(s.min)} &middot; Max: ${formatRp(s.max)}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input class="qty" type="number" min="${s.min}" max="${s.max}" value="${s.min}" data-plat="${platformKey}" data-idx="${idx}" aria-label="jumlah">
+        <button class="add-btn" data-plat="${platformKey}" data-idx="${idx}">Tambahkan ke Keranjang</button>
+      </div>
+    </div>
+    <div class="warning" style="margin-top:8px;display:none;color:#ff6b6b"></div>`;
+    serviceArea.appendChild(c);
+  });
+
+  // smooth scroll to services
+  header.scrollIntoView({behavior:'smooth', block:'start'});
+  // attach handlers
+  document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click', onAddToCart));
+}
+
+/* ================ ADD TO CART LOGIC ================ */
+function onAddToCart(e){
+  const plat = e.target.dataset.plat;
+  const idx = parseInt(e.target.dataset.idx);
+  const input = document.querySelector(`input[data-plat="${plat}"][data-idx="${idx}"]`);
+  const qty = parseInt(input.value || 0);
+  const service = PLATFORMS[plat].services[idx];
+  const warningEl = e.target.parentElement.parentElement.querySelector('.warning');
+
+  if(isNaN(qty) || qty < service.min){
+    warningEl.style.display='block'; warningEl.innerText = `Minimal pembelian ${service.min}`;
+    return;
+  }
+  if(qty > service.max){
+    warningEl.style.display='block'; warningEl.innerText = `Maksimal pembelian ${service.max}`;
+    return;
+  }
+  warningEl.style.display='none';
+
+  // add/update cart
+  const existing = cart.find(it=>it.platform===plat && it.name===service.name);
+  const total = qty * service.price;
+  if(existing){
+    existing.qty = qty;
+    existing.total = total;
+  } else {
+    cart.push({platform:plat,name:service.name,price:service.price,qty,total});
+  }
+  renderCart();
+  animateFlyToCart(e.target);
+}
+
+/* ================ FLY TO CART ANIMATION ================ */
+function animateFlyToCart(sourceBtn){
+  const rect = sourceBtn.getBoundingClientRect();
+  const fly = document.createElement('div'); fly.className='fly'; fly.innerText='🛒';
+  document.body.appendChild(fly);
+  fly.style.left = rect.left + 'px';
+  fly.style.top = rect.top + 'px';
+  const cartBtn = document.getElementById('cartButton').getBoundingClientRect();
+  requestAnimationFrame(()=>{
+    fly.style.transform = `translate(${cartBtn.left - rect.left}px, ${cartBtn.top - rect.top}px) scale(.2)`;
+    fly.style.opacity = '0';
+  });
+  setTimeout(()=>fly.remove(),850);
+}
+
+/* ================ CART RENDER ================ */
+function renderCart(){
+  const wrap = document.getElementById('cartItemsWrap');
+  const badge = document.getElementById('cartBadge');
+  wrap.innerHTML='';
+  if(cart.length===0){
+    wrap.innerHTML=`<div class="note">Keranjang kosong</div>`;
+    badge.style.display='none';
+    document.getElementById('cartTotal').innerText='Rp 0';
+    return;
+  }
+  let totalSum = 0;
+  cart.forEach((it, i)=>{
+    totalSum += it.total;
+    const row = document.createElement('div'); row.className='cart-item';
+    row.innerHTML = `<div style="max-width:65%"><div style="font-weight:600">${it.name}</div><div class="note">${PLATFORMS[it.platform].label} · x${it.qty}</div></div>
+      <div style="text-align:right"><div style="font-weight:700">Rp ${formatRp(it.total)}</div>
+      <button class="remove" onclick="removeCart(${i})">Hapus</button></div>`;
+    wrap.appendChild(row);
+  });
+  document.getElementById('cartTotal').innerText = 'Rp ' + formatRp(totalSum);
+  badge.style.display='block'; badge.innerText = cart.length;
+}
+
+/* ================ REMOVE CART ITEM ================ */
+function removeCart(idx){
+  cart.splice(idx,1); renderCart();
+}
+
+/* ================ CART POPUP / CHECKOUT ================ */
+const cartButton = document.getElementById('cartButton'); const cartPopup = document.getElementById('cartPopup');
+cartButton.addEventListener('click', ()=>{ cartPopup.style.display = cartPopup.style.display==='block'?'none':'block'; renderCart(); });
+
+document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+  if(cart.length===0){ alert('Keranjang kosong!'); return; }
+  // build message and open wa
+  let totalSum = 0; let msg = `Halo Admin Zayen Hosting, saya ingin memesan layanan:\n`;
+  cart.forEach(it=>{ msg += `- ${it.name} (${PLATFORMS[it.platform].label}) x${it.qty} = Rp ${formatRp(it.total)}\n`; totalSum += it.total; });
+  msg += `Total: Rp ${formatRp(totalSum)}`;
+  // open WA
+  window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, '_blank');
+  // close cart popup
+  cartPopup.style.display='none';
+});
+
+/* ================ MENU CLICK HANDLERS (sidebar + drawer) ================ */
+document.getElementById('menuList').querySelectorAll('li').forEach(li=>{
+  li.addEventListener('click', ()=>{ const key=li.dataset.key; showPlatform(key); });
+});
+document.getElementById('drawer').querySelectorAll('li').forEach(li=>{
+  li.addEventListener('click', ()=>{ const key=li.dataset.key; showPlatform(key); toggleDrawer(false); });
+});
+document.getElementById('adminBtn').addEventListener('click', ()=>contactAdmin());
+document.getElementById('drawerAdmin').addEventListener('click', ()=>{ contactAdmin(); toggleDrawer(false); });
+
+function showPlatform(key){
+  // if key valid -> render platform services
+  if(PLATFORMS[key]) renderServiceList(key);
+  else alert('Platform tidak ditemukan');
+}
+
+/* ================ DRAWER (phone) ================= */
+const drawer = document.getElementById('drawer');
+function toggleDrawer(open){
+  if(open) drawer.classList.add('open'); else drawer.classList.remove('open');
+}
+document.getElementById('closeDrawer').addEventListener('click', ()=>toggleDrawer(false));
+
+/* ================ THEME TOGGLE ================= */
+const themeToggle = document.getElementById('themeToggle');
+themeToggle.addEventListener('click', ()=>{
+  document.body.classList.toggle('dark');
+});
+
+/* ================ DEVICE MODE (A: manual full) ================= */
+const deviceToggle = document.getElementById('deviceToggle');
+const deviceLabel = document.getElementById('deviceLabel');
+let deviceState = 'phone'; // phone / tablet / laptop
+function applyDeviceMode(state){
+  // remove previous classes
+  document.body.classList.remove('device-phone','device-tablet','device-laptop');
+  if(state==='phone'){ document.body.classList.add('device-phone'); deviceToggle.textContent='📱'; deviceLabel.innerText='Phone'; }
+  else if(state==='tablet'){ document.body.classList.add('device-tablet'); deviceToggle.textContent='📟'; deviceLabel.innerText='Tablet'; }
+  else { document.body.classList.add('device-laptop'); deviceToggle.textContent='💻'; deviceLabel.innerText='Laptop'; }
+}
+deviceToggle.addEventListener('click', ()=>{
+  if(deviceState==='phone') deviceState='tablet';
+  else if(deviceState==='tablet') deviceState='laptop';
+  else deviceState='phone';
+  applyDeviceMode(deviceState);
+  // if phone mode, open drawer by default for convenience
+  if(deviceState==='phone') toggleDrawer(true);
+  else toggleDrawer(false);
+});
+applyDeviceMode(deviceState);
+
+/* ================ ONBOARDING POPUP (bilingual) ================= */
+const orderPopup = document.getElementById('orderPopup');
+const langSwitch = document.getElementById('langSwitch');
+const onboardText = document.getElementById('onboardText');
+const nextOnboard = document.getElementById('nextOnboard');
+const skipOnboard = document.getElementById('skipOnboard');
+let onboardStep = 1; let lang='id';
+const ONBOARD = {
+  id:[
+    {title:'Langkah 1 — Pilih Platform', text:'Pilih platform pada menu layanan (WhatsApp, TikTok, Instagram, Facebook).'},
+    {title:'Langkah 2 — Pilih Jenis Layanan', text:'Pilih layanan spesifik lalu masukkan jumlah sesuai minimal/maksimal.'},
+    {title:'Langkah 3 — Checkout', text:'Tambahkan ke keranjang. Tekan Checkout untuk menghubungi Admin lewat WhatsApp.'}
+  ],
+  en:[
+    {title:'Step 1 — Choose Platform', text:'Select a platform (WhatsApp, TikTok, Instagram, Facebook).'},
+    {title:'Step 2 — Choose Service', text:'Choose a specific service and enter quantity within min/max limits.'},
+    {title:'Step 3 — Checkout', text:'Add to cart. Press Checkout to contact Admin via WhatsApp.'}
+  ]
+};
+
+function showOnboard(){
+  // show only if not seen
+  if(localStorage.getItem('zayen_onboard_seen')){ orderPopup.style.display='none'; return; }
+  orderPopup.style.display='flex';
+  renderOnboard();
+}
+function renderOnboard(){
+  const data = ONBOARD[lang][onboardStep-1];
+  document.querySelector('#orderPopup .popup strong')?.remove?.(); // not necessary; Update contents instead
+  document.querySelector('#orderPopup .popup h3')?.remove?.();
+  // update content
+  document.querySelector('#orderPopup .popup').querySelector('strong')?.remove?.();
+  // simpler: set text
+  document.querySelector('#orderPopup .popup strong')?.remove?.(); // ignore older
+  document.querySelector('#orderPopup .popup').querySelector('strong'); // not used
+  // set inner manual
+  document.querySelector('#orderPopup .popup').querySelector('strong');
+  // update description
+  document.getElementById('onboardContent').querySelector('p').innerText = data.text;
+  // set next button label
+  nextOnboard.innerText = (lang==='id') ? (onboardStep<3 ? 'Berikutnya' : 'Mulai Sekarang') : (onboardStep<3 ? 'Next' : 'Start Now');
+  skipOnboard.innerText = (lang==='id') ? 'Lewati' : 'Skip';
+  langSwitch.innerText = lang.toUpperCase();
+}
+langSwitch.addEventListener('click', ()=>{
+  lang = (lang==='id') ? 'en' : 'id';
+  renderOnboard();
+});
+nextOnboard.addEventListener('click', ()=>{
+  if(onboardStep<3){ onboardStep++; renderOnboard(); return; }
+  // finish
+  localStorage.setItem('zayen_onboard_seen','1');
+  orderPopup.style.display='none';
+});
+skipOnboard.addEventListener('click', ()=>{ localStorage.setItem('zayen_onboard_seen','1'); orderPopup.style.display='none'; });
+
+showOnboard();
+
+/* ================ SPLASH TIMING (adaptive 5-10s) ================= */
+window.addEventListener('load', ()=>{
+  // determine simple device perf: use timing API or user agent? We'll approximate:
+  // If low-memory / small device, use shorter 5s; else 6-8s. Keep it simple:
+  const u = navigator.userAgent || '';
+  const isMobile = /Mobi|Android/i.test(u);
+  const duration = isMobile ? 5000 : 7000; // 5s mobile, 7s desktop
+  setTimeout(()=>{ const sp = document.getElementById('splash'); if(sp) sp.style.display='none'; }, duration);
+});
+
+/* ================ INITIALIZE: nothing selected yet ================ */
+renderCart(); // show empty
+
+/* ================= ADMIN CONTACT ================= */
+function contactAdmin(){
+  window.open(`https://wa.me/${ADMIN_WA}`, '_blank');
+}
+
+/* ================= QUICK: open drawer on phone when header brand clicked (optional) ================ */
+document.querySelector('.brand').addEventListener('click', ()=>{
+  if(deviceState==='phone') toggleDrawer(true);
+});
+</script>
 </body>
 </html>
+
