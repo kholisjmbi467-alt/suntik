@@ -1,207 +1,442 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Zayen Media - Layanan Sosial Media</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zayen Hosting — Layanan Sosial Media</title>
+
+  <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            primary: '#6366F1', // Indigo
-            secondary: '#8B5CF6', // Purple
-            accent: '#06B6D4', // Cyan
+            primary: '#5B21B6',    // deep purple
+            accent: '#06B6D4',     // cyan accent
+            soft: '#EEF2FF'        // very light
           },
-        },
-      },
+          boxShadow: {
+            'soft-lg': '0 10px 30px rgba(91,33,182,0.12)'
+          }
+        }
+      }
     };
   </script>
+
+  <style>
+    /* small custom styles */
+    .service-btn { @apply flex items-center gap-3 px-4 py-3 rounded-xl bg-white shadow hover:shadow-lg transition; }
+    .service-btn .icon { @apply w-10 h-10 flex items-center justify-center rounded-lg text-white; }
+    /* 3D card lift */
+    .card-3d { transform-style: preserve-3d; perspective: 1000px; }
+    .card-inner { transition: transform .35s cubic-bezier(.2,.9,.3,1), box-shadow .35s; transform-origin:center; }
+    .card-3d:hover .card-inner { transform: translateY(-10px) rotateX(2deg) translateZ(12px); box-shadow: 0 24px 50px rgba(0,0,0,0.12); }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-100 transition-all duration-300">
+<body class="bg-gray-50 text-gray-800 antialiased">
 
   <!-- HEADER -->
-  <header class="flex justify-between items-center px-6 py-3 bg-gradient-to-r from-primary to-secondary shadow-md sticky top-0 z-50">
-    <div class="flex items-center space-x-3">
-      <img src="Hitam Putih Sederhana Komunitas Burung Logo_20251108_222453_0000.png" alt="Logo" class="h-10 w-auto">
-      <h1 class="text-xl font-bold text-white tracking-wide">Zayen Media</h1>
+  <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-500 text-white sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto flex items-center justify-between px-5 py-3">
+      <div class="flex items-center gap-3">
+        <!-- Logo (file must be in same folder) -->
+        <img src="Hitam Putih Sederhana Komunitas Burung Logo_20251108_222453_0000.png" alt="Zayen Hosting Logo" class="h-12 w-12 object-contain rounded-md bg-white/10 p-1">
+        <div>
+          <div class="font-bold text-lg">Zayen Hosting</div>
+          <div class="text-sm opacity-80">Professional Social Media Services</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="themeToggle" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg flex items-center gap-2">
+          <span id="themeIcon">🌙</span>
+          <span class="text-sm">Mode</span>
+        </button>
+        <a href="#" onclick="contactAdmin()" class="bg-white text-indigo-600 hover:bg-white/90 px-3 py-2 rounded-lg font-medium shadow">Hubungi Admin</a>
+      </div>
     </div>
-    <button id="toggleTheme" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-white font-medium transition">
-      🌙 Mode
-    </button>
   </header>
 
-  <!-- NAVIGATION -->
-  <nav class="flex justify-center flex-wrap gap-3 py-4 bg-white dark:bg-gray-800 shadow">
-    <button onclick="showServices('whatsapp')" class="px-4 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg font-medium transition">WhatsApp</button>
-    <button onclick="showServices('tiktok')" class="px-4 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg font-medium transition">TikTok</button>
-    <button onclick="showServices('instagram')" class="px-4 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg font-medium transition">Instagram</button>
-    <button onclick="showServices('facebook')" class="px-4 py-2 bg-primary hover:bg-primary/80 text-white rounded-lg font-medium transition">Facebook</button>
-  </nav>
+  <!-- NAV + LAYOUT -->
+  <div class="max-w-7xl mx-auto px-5 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
 
-  <!-- SERVICES -->
-  <main class="p-6">
-    <div id="whatsapp" class="services hidden flex-wrap justify-center gap-6">
-      <div class="service-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 border border-gray-100 dark:border-gray-700" 
-           data-name="Member Saluran WhatsApp" data-price="38" data-min="10" data-max="50000">
-        <h3 class="text-lg font-semibold text-primary">Member Saluran WhatsApp</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Rp 38 | Min: 10 | Max: 50.000</p>
-        <input type="number" placeholder="Jumlah" onchange="updateCart(this)" class="mt-3 w-full border rounded-lg px-3 py-2 dark:bg-gray-900">
-        <div class="warning text-red-500 text-sm mt-1"></div>
+    <!-- LEFT: Vertical service menu -->
+    <aside class="md:col-span-1 space-y-4">
+      <div class="bg-white rounded-2xl p-4 shadow"> 
+        <h4 class="text-indigo-600 font-semibold mb-3">Jenis Layanan</h4>
+
+        <!-- Vertical Buttons with icons -->
+        <div class="space-y-3">
+          <button class="service-btn w-full justify-start" onclick="showServices('whatsapp')">
+            <div class="icon bg-green-500">📱</div>
+            <div class="text-left">
+              <div class="font-medium">WhatsApp</div>
+              <div class="text-xs text-gray-500">Member & Reaction</div>
+            </div>
+          </button>
+
+          <button class="service-btn w-full justify-start" onclick="showServices('tiktok')">
+            <div class="icon bg-black">🎵</div>
+            <div class="text-left">
+              <div class="font-medium">TikTok</div>
+              <div class="text-xs text-gray-500">Views, Like, Followers</div>
+            </div>
+          </button>
+
+          <button class="service-btn w-full justify-start" onclick="showServices('instagram')">
+            <div class="icon bg-gradient-to-tr from-pink-500 to-yellow-400">📸</div>
+            <div class="text-left">
+              <div class="font-medium">Instagram</div>
+              <div class="text-xs text-gray-500">Followers & Likes</div>
+            </div>
+          </button>
+
+          <button class="service-btn w-full justify-start" onclick="showServices('facebook')">
+            <div class="icon bg-blue-600">f</div>
+            <div class="text-left">
+              <div class="font-medium">Facebook</div>
+              <div class="text-xs text-gray-500">Followers & Engagement</div>
+            </div>
+          </button>
+        </div>
       </div>
 
-      <div class="service-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 border border-gray-100 dark:border-gray-700"
-           data-name="Post Reaction WhatsApp" data-price="35" data-min="10" data-max="50000">
-        <h3 class="text-lg font-semibold text-primary">Post Reaction WhatsApp</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Rp 35 | Min: 10 | Max: 50.000</p>
-        <input type="number" placeholder="Jumlah" onchange="updateCart(this)" class="mt-3 w-full border rounded-lg px-3 py-2 dark:bg-gray-900">
-        <div class="warning text-red-500 text-sm mt-1"></div>
+      <!-- Promo / info card -->
+      <div class="bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-2xl p-6 shadow-lg card-3d">
+        <div class="card-inner">
+          <h5 class="text-lg font-semibold">Promo Paket Bulanan</h5>
+          <p class="text-sm mt-2 opacity-90">Dapatkan diskon khusus untuk paket besar. Hubungi admin untuk penawaran custom.</p>
+          <div class="mt-4">
+            <button onclick="contactAdmin()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg">Hubungi Admin</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </aside>
 
-    <div id="tiktok" class="services hidden flex-wrap justify-center gap-6">
-      <div class="service-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 border border-gray-100 dark:border-gray-700"
-           data-name="TikTok Views" data-price="8" data-min="100" data-max="2147483647">
-        <h3 class="text-lg font-semibold text-primary">TikTok Views</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Rp 8 | Min: 100 | Max: 2.147.483.647</p>
-        <input type="number" placeholder="Jumlah" onchange="updateCart(this)" class="mt-3 w-full border rounded-lg px-3 py-2 dark:bg-gray-900">
-        <div class="warning text-red-500 text-sm mt-1"></div>
-      </div>
+    <!-- CENTER: Services area -->
+    <section class="md:col-span-2 space-y-6">
 
-      <div class="service-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 border border-gray-100 dark:border-gray-700"
-           data-name="TikTok Like" data-price="8" data-min="10" data-max="30000">
-        <h3 class="text-lg font-semibold text-primary">TikTok Like</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Rp 8 | Min: 10 | Max: 30.000</p>
-        <input type="number" placeholder="Jumlah" onchange="updateCart(this)" class="mt-3 w-full border rounded-lg px-3 py-2 dark:bg-gray-900">
-        <div class="warning text-red-500 text-sm mt-1"></div>
-      </div>
-    </div>
-
-    <div id="instagram" class="services hidden flex-wrap justify-center gap-6">
-      <div class="service-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 border border-gray-100 dark:border-gray-700"
-           data-name="Instagram Followers" data-price="20" data-min="10" data-max="100000">
-        <h3 class="text-lg font-semibold text-primary">Instagram Followers</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Rp 20 | Min: 10 | Max: 100.000</p>
-        <input type="number" placeholder="Jumlah" onchange="updateCart(this)" class="mt-3 w-full border rounded-lg px-3 py-2 dark:bg-gray-900">
-        <div class="warning text-red-500 text-sm mt-1"></div>
-      </div>
-    </div>
-
-    <div id="facebook" class="services hidden flex-wrap justify-center gap-6">
-      <div class="service-card bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 border border-gray-100 dark:border-gray-700"
-           data-name="Facebook Followers" data-price="10" data-min="10" data-max="500000">
-        <h3 class="text-lg font-semibold text-primary">Facebook Followers</h3>
-        <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Rp 10 | Min: 10 | Max: 500.000</p>
-        <input type="number" placeholder="Jumlah" onchange="updateCart(this)" class="mt-3 w-full border rounded-lg px-3 py-2 dark:bg-gray-900">
-        <div class="warning text-red-500 text-sm mt-1"></div>
+      <!-- Breadcrumb / header -->
+      <div class="flex items-center justify-between">
+        <h2 class="text-2xl font-bold">Layanan</h2>
+        <p class="text-sm text-gray-500">Pilih layanan dari menu di kiri, masukkan jumlah, lalu tambahkan ke keranjang.</p>
       </div>
 
-      <div class="service-card bg-gradient-to-br from-secondary to-primary text-white p-5 rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition w-72 text-center">
-        <h3 class="text-lg font-semibold">Masih banyak layanan lainnya!</h3>
-        <button onclick="contactAdmin()" class="mt-4 px-4 py-2 bg-white/30 hover:bg-white/40 rounded-lg font-medium transition">Hubungi Admin</button>
+      <!-- SERVICES: each group will be toggled -->
+      <div id="servicesWrap" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+        <!-- WhatsApp -->
+        <div id="whatsapp" class="service-group hidden space-y-4">
+          <div class="bg-white rounded-2xl p-5 shadow card-3d">
+            <div class="card-inner">
+              <h3 class="text-lg font-semibold text-indigo-600">Member Saluran WhatsApp</h3>
+              <p class="text-sm text-gray-500 mt-1">Rp 38 | Min: 10 | Max: 50.000</p>
+              <div class="mt-4 flex gap-2 items-center">
+                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="50000">
+                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
+              </div>
+              <div class="text-red-500 text-sm mt-2 warning"></div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 shadow card-3d">
+            <div class="card-inner">
+              <h3 class="text-lg font-semibold text-indigo-600">Post Reaction WhatsApp</h3>
+              <p class="text-sm text-gray-500 mt-1">Rp 35 | Min: 10 | Max: 50.000</p>
+              <div class="mt-4 flex gap-2 items-center">
+                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="50000">
+                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
+              </div>
+              <div class="text-red-500 text-sm mt-2 warning"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TikTok -->
+        <div id="tiktok" class="service-group hidden space-y-4">
+          <div class="bg-white rounded-2xl p-5 shadow card-3d">
+            <div class="card-inner">
+              <h3 class="text-lg font-semibold text-indigo-600">TikTok Views</h3>
+              <p class="text-sm text-gray-500 mt-1">Rp 8 | Min: 100</p>
+              <div class="mt-4 flex gap-2 items-center">
+                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="100" data-max="2147483647">
+                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
+              </div>
+              <div class="text-red-500 text-sm mt-2 warning"></div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 shadow card-3d">
+            <div class="card-inner">
+              <h3 class="text-lg font-semibold text-indigo-600">TikTok Like</h3>
+              <p class="text-sm text-gray-500 mt-1">Rp 8 | Min: 10 | Max: 30.000</p>
+              <div class="mt-4 flex gap-2 items-center">
+                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="30000">
+                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
+              </div>
+              <div class="text-red-500 text-sm mt-2 warning"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Instagram -->
+        <div id="instagram" class="service-group hidden space-y-4">
+          <div class="bg-white rounded-2xl p-5 shadow card-3d">
+            <div class="card-inner">
+              <h3 class="text-lg font-semibold text-indigo-600">Instagram Followers</h3>
+              <p class="text-sm text-gray-500 mt-1">Rp 20 | Min: 10 | Max: 100.000</p>
+              <div class="mt-4 flex gap-2 items-center">
+                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="100000">
+                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
+              </div>
+              <div class="text-red-500 text-sm mt-2 warning"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Facebook -->
+        <div id="facebook" class="service-group hidden space-y-4">
+          <div class="bg-white rounded-2xl p-5 shadow card-3d">
+            <div class="card-inner">
+              <h3 class="text-lg font-semibold text-indigo-600">Facebook Followers</h3>
+              <p class="text-sm text-gray-500 mt-1">Rp 10 | Min: 10 | Max: 500.000</p>
+              <div class="mt-4 flex gap-2 items-center">
+                <input type="number" placeholder="Jumlah" class="w-32 border rounded-lg px-3 py-2" data-min="10" data-max="500000">
+                <button class="ml-auto px-4 py-2 bg-indigo-600 text-white rounded-lg" onclick="addToCart(this)">Tambahkan</button>
+              </div>
+              <div class="text-red-500 text-sm mt-2 warning"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
-  </main>
+    </section>
 
-  <!-- CART BUTTON -->
-  <div class="fixed bottom-6 right-6 bg-gradient-to-r from-primary to-secondary text-white p-4 rounded-full cursor-pointer shadow-lg hover:scale-110 transition" onclick="toggleCart()">🛒</div>
+    <!-- RIGHT: Cart + Payment chooser -->
+    <aside class="md:col-span-1 sticky top-28 space-y-4">
 
-  <!-- CART POPUP -->
-  <div id="cartPopup" class="hidden fixed bottom-20 right-6 bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-xl w-80 border border-gray-200 dark:border-gray-700">
-    <h3 class="text-lg font-semibold mb-2">Keranjang</h3>
-    <div id="cartItems" class="space-y-2 text-sm"></div>
-    <div class="mt-3 font-semibold">Total: Rp <span id="cartTotal">0</span></div>
-    <button onclick="checkout()" class="mt-4 w-full bg-gradient-to-r from-primary to-secondary hover:opacity-90 text-white py-2 rounded-lg transition font-semibold">Checkout</button>
+      <!-- Keranjang -->
+      <div id="cartCard" class="bg-white rounded-2xl p-5 shadow-lg">
+        <h4 class="font-semibold text-lg">Keranjang</h4>
+        <div id="cartItems" class="mt-3 space-y-3 text-sm text-gray-700">
+          <div class="text-gray-500">Belum ada item</div>
+        </div>
+        <div class="mt-4 flex items-center justify-between">
+          <div class="font-semibold">Total:</div>
+          <div class="font-semibold" id="cartTotal">Rp 0</div>
+        </div>
+        <button id="checkoutBtn" onclick="openPayment()" class="mt-4 w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-2 rounded-lg disabled:opacity-50" disabled>Checkout</button>
+      </div>
+
+      <!-- PAYMENT MODAL (hidden, styled as card) -->
+      <div id="paymentCard" class="hidden bg-white rounded-2xl p-5 shadow-lg">
+        <h4 class="font-semibold text-lg">Pilih Metode Pembayaran</h4>
+        <p class="text-sm text-gray-500 mt-1">Klik salah satu metode untuk lanjut ke WhatsApp checkout</p>
+
+        <div class="mt-4 grid grid-cols-1 gap-3">
+          <!-- Each tile includes a small logo (emoji fallback) and label -->
+          <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('OVO')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Ovo_Logo.png" alt="OVO" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+            <div class="text-left">
+              <div class="font-medium">OVO</div>
+              <div class="text-xs text-gray-500">Transfer / Dompet Digital</div>
+            </div>
+            <div class="ml-auto text-sm text-gray-600">Logo</div>
+          </button>
+
+          <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('DANA')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/Dana_Logo.png" alt="DANA" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+            <div class="text-left">
+              <div class="font-medium">DANA</div>
+              <div class="text-xs text-gray-500">Dompet Digital</div>
+            </div>
+            <div class="ml-auto text-sm text-gray-600">Logo</div>
+          </button>
+
+          <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('QRIS')">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/QRIS_Logo.png" alt="QRIS" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
+            <div class="text-left">
+              <div class="font-medium">QRIS</div>
+              <div class="text-xs text-gray-500">Scan & Bayar</div>
+            </div>
+            <div class="ml-auto text-sm text-gray-600">Logo</div>
+          </button>
+        </div>
+
+        <div class="mt-4 flex justify-end">
+          <button class="px-4 py-2 rounded-lg text-sm" onclick="closePayment()">Batal</button>
+        </div>
+      </div>
+
+    </aside>
   </div>
 
+  <!-- FOOTER -->
+  <footer class="mt-10 py-6 bg-white text-center text-sm text-gray-500">
+    © <span id="year"></span> Zayen Hosting — All rights reserved.
+  </footer>
+
+  <!-- SCRIPTS -->
   <script>
-    let cart = [];
+    // Basic app state
+    const cart = [];
 
+    // Show current year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = document.getElementById('themeIcon');
+    let dark = false;
+    themeToggle.onclick = () => {
+      dark = !dark;
+      document.documentElement.classList.toggle('dark', dark);
+      if (dark) {
+        document.body.classList.add('bg-gray-900', 'text-gray-100');
+        themeIcon.textContent = '☀️';
+      } else {
+        document.body.classList.remove('bg-gray-900', 'text-gray-100');
+        themeIcon.textContent = '🌙';
+      }
+    };
+
+    // Service menu handling
     function showServices(id) {
-      document.querySelectorAll('.services').forEach(s => s.classList.add('hidden'));
-      document.getElementById(id).classList.remove('hidden');
+      document.querySelectorAll('.service-group').forEach(s => s.classList.add('hidden'));
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('hidden');
+
+      // scroll to services on small screens
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
-    function updateCart(input) {
-      const card = input.closest('.service-card');
-      const name = card.dataset.name;
-      const price = parseInt(card.dataset.price);
-      const min = parseInt(card.dataset.min);
-      const max = parseInt(card.dataset.max);
-      const qty = parseInt(input.value);
-      const warning = card.querySelector('.warning');
+    // Add to cart handler (button placed next to input)
+    function addToCart(btn){
+      const group = btn.closest('.card-inner') || btn.closest('.service-group');
+      const input = group.querySelector('input[type="number"]');
+      const title = group.querySelector('h3').innerText.trim();
+      const min = parseInt(input.dataset.min || 1);
+      const max = parseInt(input.dataset.max || Number.MAX_SAFE_INTEGER);
+      const qty = parseInt(input.value || 0);
 
-      if (qty < min) {
-        warning.textContent = `Minimal pembelian ${min}`;
+      const warningEl = group.querySelector('.warning');
+      if (isNaN(qty) || qty <= 0) {
+        warningEl && (warningEl.textContent = 'Masukkan jumlah valid.');
         return;
-      } else if (qty > max) {
-        warning.textContent = `Maksimal pembelian ${max}`;
-        return;
-      } else {
-        warning.textContent = '';
       }
+      if (qty < min) { warningEl && (warningEl.textContent = `Minimal ${min}`); return; }
+      if (qty > max) { warningEl && (warningEl.textContent = `Maksimal ${max}`); return; }
+      warningEl && (warningEl.textContent = '');
 
-      const index = cart.findIndex(i => i.name === name);
-      if (qty === 0) {
-        if (index !== -1) cart.splice(index, 1);
+      // price: read from first small text content (we stored prices visually earlier)
+      // For reliability set pricing table here (mirrors the displayed price)
+      const priceList = {
+        'Member Saluran WhatsApp': 38,
+        'Post Reaction WhatsApp': 35,
+        'TikTok Views': 8,
+        'TikTok Like': 8,
+        'Instagram Followers': 20,
+        'Facebook Followers': 10
+      };
+      const price = priceList[title] || 0;
+
+      // check if item exists
+      const idx = cart.findIndex(i => i.name === title);
+      if (idx !== -1) {
+        cart[idx].qty = qty;
+        cart[idx].total = cart[idx].price * qty;
       } else {
-        if (index !== -1) cart[index].qty = qty;
-        else cart.push({ name, price, qty });
+        cart.push({ name: title, price, qty, total: price * qty });
       }
       renderCart();
     }
 
-    function renderCart() {
-      const cartItems = document.getElementById('cartItems');
-      cartItems.innerHTML = '';
+    // Render cart
+    function renderCart(){
+      const itemsWrap = document.getElementById('cartItems');
+      itemsWrap.innerHTML = '';
+      if (cart.length === 0) {
+        itemsWrap.innerHTML = '<div class="text-gray-500">Belum ada item</div>';
+        document.getElementById('cartTotal').textContent = 'Rp 0';
+        document.getElementById('checkoutBtn').disabled = true;
+        return;
+      }
       let total = 0;
-      cart.forEach(item => {
+      cart.forEach((it, index) => {
+        total += it.total;
         const div = document.createElement('div');
+        div.className = 'flex items-center justify-between';
         div.innerHTML = `
-          <div class='flex justify-between items-center'>
-            <span>${item.name} x${item.qty}</span>
-            <span>Rp ${item.price * item.qty}</span>
+          <div>
+            <div class="font-medium">${it.name} <span class="text-xs text-gray-500">x${it.qty}</span></div>
+            <div class="text-xs text-gray-500">Rp ${it.price} / unit</div>
           </div>
-          <button class='text-red-500 text-xs mt-1' onclick="removeFromCart('${item.name}')">Hapus</button>
+          <div class="text-right">
+            <div class="font-semibold">Rp ${it.total}</div>
+            <button class="text-red-500 text-xs mt-1" onclick="removeItem(${index})">Hapus</button>
+          </div>
         `;
-        cartItems.appendChild(div);
-        total += item.price * item.qty;
+        itemsWrap.appendChild(div);
       });
-      document.getElementById('cartTotal').textContent = total;
+      document.getElementById('cartTotal').textContent = `Rp ${total}`;
+      document.getElementById('checkoutBtn').disabled = false;
     }
 
-    function removeFromCart(name) {
-      cart = cart.filter(i => i.name !== name);
+    function removeItem(i){
+      cart.splice(i,1);
       renderCart();
     }
 
-    function toggleCart() {
-      document.getElementById('cartPopup').classList.toggle('hidden');
+    // Payment card handlers (no typing)
+    function openPayment(){
+      document.getElementById('paymentCard').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function closePayment(){
+      document.getElementById('paymentCard').classList.add('hidden');
     }
 
-    function checkout() {
-      if (cart.length === 0) return alert('Keranjang kosong!');
-      const method = prompt('Pilih metode pembayaran: OVO, DANA, QRIS').toLowerCase();
-      if (!['ovo', 'dana', 'qris'].includes(method)) return alert('Metode salah!');
+    // completeCheckout -> open WhatsApp with message summary and selected method
+    function completeCheckout(method){
+      if (cart.length === 0) { alert('Keranjang kosong!'); return; }
 
-      let msg = 'Halo Admin, saya ingin membeli:\n';
       let total = 0;
+      let msg = `Halo Admin Zayen Hosting, saya ingin memesan layanan:\n`;
       cart.forEach(i => {
-        msg += `${i.name} x${i.qty} = Rp ${i.price * i.qty}\n`;
-        total += i.price * i.qty;
+        msg += `- ${i.name} x${i.qty} = Rp ${i.total}\n`;
+        total += i.total;
       });
-      msg += `Total: Rp ${total}\nMetode: ${method.toUpperCase()}`;
+      msg += `Total: Rp ${total}\nMetode Pembayaran: ${method}\nMohon konfirmasi. Terima kasih.`;
+
+      // You can change the WA number here
       const wa = '6283153044178';
-      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`);
+      const url = `https://wa.me/${wa}?text=${encodeURIComponent(msg)}`;
+      window.open(url, '_blank');
+
+      // small UX: close payment card
+      closePayment();
     }
 
-    function contactAdmin() {
-      window.open('https://wa.me/6283153044178');
+    // contact admin quick link
+    function contactAdmin(){
+      const wa = '6283153044178';
+      window.open(`https://wa.me/${wa}`, '_blank');
     }
 
-    document.getElementById('toggleTheme').addEventListener('click', () => {
-      document.body.classList.toggle('dark');
+    // Initialize: show default services (WhatsApp)
+    showServices('whatsapp');
+
+    // Responsive: ensure logo loads — if not, show fallback text
+    window.addEventListener('load', () => {
+      const img = document.querySelector('header img');
+      img.onerror = function(){
+        // fallback: show brand initials
+        const wrapper = document.createElement('div');
+        wrapper.className = 'h-12 w-12 rounded-md bg-white/10 flex items-center justify-center text-white font-bold';
+        wrapper.innerText = 'ZH';
+        img.replaceWith(wrapper);
+      };
     });
   </script>
 </body>
