@@ -148,13 +148,8 @@ th{color:var(--g1)}
 }
 
 /* ================= ORDER POPUP (onboarding) ================= */
-#orderPopup{
-  position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); display:flex;align-items:center;justify-content:center;z-index:995;
-}
-.popup{
-  background:var(--text-light); color:var(--text-dark); border-radius:12px;padding:22px; max-width:420px; width:92%;
-  box-shadow:var(--shadow); text-align:left;
-}
+#orderPopup{position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); display:flex;align-items:center;justify-content:center;z-index:995;}
+.popup{background:var(--text-light); color:var(--text-dark); border-radius:12px;padding:22px; max-width:420px; width:92%; box-shadow:var(--shadow); text-align:left;}
 .popup h3{margin-top:0}
 .popup .controls{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
 .lang-switch{padding:6px 10px;border-radius:8px;background:var(--glass-2);cursor:pointer;margin-left:auto;}
@@ -206,16 +201,13 @@ body.dark .note{color:rgba(255,255,255,0.7)}
   </div>
 
   <div class="header-actions">
-    <!-- device mode: cycles phone/tablet/laptop -->
     <div style="display:flex;align-items:center;gap:8px">
       <button id="deviceToggle" class="icon-btn" title="Mode perangkat (klik untuk ganti)">📱</button>
       <div class="device-label" id="deviceLabel">Phone</div>
     </div>
 
-    <!-- dark/light -->
     <button id="themeToggle" class="icon-btn" title="Toggle theme">🌗</button>
 
-    <!-- cart button -->
     <div style="position:relative">
       <button id="cartButton" class="cart-btn" title="Keranjang">🛒</button>
       <div id="cartBadge" class="cart-badge" style="display:none">0</div>
@@ -279,10 +271,10 @@ body.dark .note{color:rgba(255,255,255,0.7)}
   <!-- Service containers (rendered by JS) -->
   <div id="serviceArea"></div>
 
-  <!-- Payment methods card -->
+  <!-- Payment methods card (no "logo dihilangkan..." text) -->
   <div class="card" id="paymentCard">
     <h3>Metode Pembayaran</h3>
-    <p class="note">Silakan pilih metode saat checkout. (Logo dihilangkan sesuai permintaan)</p>
+    <p class="note">Silakan pilih metode saat checkout.</p>
     <table>
       <tr><td>OVO</td><td>085123231065</td></tr>
       <tr><td>DANA</td><td>083153044178</td></tr>
@@ -305,7 +297,7 @@ body.dark .note{color:rgba(255,255,255,0.7)}
 <div id="orderPopup" aria-hidden="true">
   <div class="popup" role="dialog" aria-modal="true">
     <div style="display:flex;align-items:center;gap:10px">
-      <strong>Cara Melakukan Pembelian</strong>
+      <strong id="onboardTitle">Cara Melakukan Pembelian</strong>
       <div class="lang-switch" id="langSwitch" title="Ganti Bahasa">ID</div>
     </div>
     <div id="onboardContent" style="margin-top:12px">
@@ -325,9 +317,7 @@ body.dark .note{color:rgba(255,255,255,0.7)}
 </div>
 
 <script>
-/* ================= DATA: platforms -> services =================
-   All services retained and new ones added per user's input.
-*/
+/* ================= DATA: platforms -> services ================= */
 const PLATFORMS = {
   whatsapp: {
     label: 'WhatsApp',
@@ -370,11 +360,11 @@ const PLATFORMS = {
 /* ================= APP STATE ================= */
 let cart = []; // {platform,name,price,qty,total}
 let currentPlatform = null;
-const ADMIN_WA = '6283153044178'; // use this WhatsApp number
+const ADMIN_WA = '6283153044178'; // WhatsApp admin
 
 /* ================= HELPERS ================= */
 function formatRp(num){
-  if(!num) return '0';
+  if(!num && num !== 0) return '0';
   return new Intl.NumberFormat('id-ID').format(num);
 }
 
@@ -395,7 +385,7 @@ function renderServiceList(platformKey){
     c.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
       <div style="flex:1;min-width:220px">
         <div style="font-weight:600">${s.name}</div>
-        <div class="note">Rp ${formatRp(s.price)} &middot; Min: ${formatRp(s.min)} &middot; Max: ${formatRp(s.max)}</div>
+        <div class="note">Rp ${formatRp(s.price)} · Min: ${formatRp(s.min)} · Max: ${formatRp(s.max)}</div>
       </div>
       <div style="display:flex;align-items:center;gap:8px">
         <input class="qty" type="number" min="${s.min}" max="${s.max}" value="${s.min}" data-plat="${platformKey}" data-idx="${idx}" aria-label="jumlah">
@@ -408,52 +398,53 @@ function renderServiceList(platformKey){
 
   // smooth scroll to services
   header.scrollIntoView({behavior:'smooth', block:'start'});
-  // attach handlers
-  document.querySelectorAll('.add-btn').forEach(btn=>btn.addEventListener('click', onAddToCart));
 }
 
-/* ================ ADD TO CART LOGIC ================ */
-function onAddToCart(e){
-  const plat = e.target.dataset.plat;
-  const idx = parseInt(e.target.dataset.idx);
-  const input = document.querySelector(`input[data-plat="${plat}"][data-idx="${idx}"]`);
-  const qty = parseInt(input.value || 0);
-  const service = PLATFORMS[plat].services[idx];
-  const warningEl = e.target.parentElement.parentElement.querySelector('.warning');
+/* ================ ADD TO CART (event delegation) ================ */
+serviceArea.addEventListener('click', function(e){
+  const target = e.target;
+  if(target.classList.contains('add-btn')){
+    const plat = target.dataset.plat;
+    const idx = parseInt(target.dataset.idx);
+    const input = document.querySelector(`input[data-plat="${plat}"][data-idx="${idx}"]`);
+    const qty = parseInt(input.value || 0);
+    const service = PLATFORMS[plat].services[idx];
+    const warningEl = target.parentElement.parentElement.querySelector('.warning');
 
-  if(isNaN(qty) || qty < service.min){
-    warningEl.style.display='block'; warningEl.innerText = `Minimal pembelian ${service.min}`;
-    return;
-  }
-  if(qty > service.max){
-    warningEl.style.display='block'; warningEl.innerText = `Maksimal pembelian ${service.max}`;
-    return;
-  }
-  warningEl.style.display='none';
+    if(isNaN(qty) || qty < service.min){
+      warningEl.style.display='block'; warningEl.innerText = `Minimal pembelian ${service.min}`;
+      return;
+    }
+    if(qty > service.max){
+      warningEl.style.display='block'; warningEl.innerText = `Maksimal pembelian ${service.max}`;
+      return;
+    }
+    warningEl.style.display='none';
 
-  // add/update cart
-  const existing = cart.find(it=>it.platform===plat && it.name===service.name);
-  const total = qty * service.price;
-  if(existing){
-    existing.qty = qty;
-    existing.total = total;
-  } else {
-    cart.push({platform:plat,name:service.name,price:service.price,qty,total});
+    // add/update cart
+    const existing = cart.find(it=>it.platform===plat && it.name===service.name);
+    const total = qty * service.price;
+    if(existing){
+      existing.qty = qty;
+      existing.total = total;
+    } else {
+      cart.push({platform:plat,name:service.name,price:service.price,qty,total});
+    }
+    renderCart();
+    animateFlyToCart(input);
   }
-  renderCart();
-  animateFlyToCart(e.target);
-}
+});
 
 /* ================ FLY TO CART ANIMATION ================ */
-function animateFlyToCart(sourceBtn){
-  const rect = sourceBtn.getBoundingClientRect();
+function animateFlyToCart(sourceEl){
+  const rect = sourceEl.getBoundingClientRect();
   const fly = document.createElement('div'); fly.className='fly'; fly.innerText='🛒';
   document.body.appendChild(fly);
   fly.style.left = rect.left + 'px';
   fly.style.top = rect.top + 'px';
   const cartBtn = document.getElementById('cartButton').getBoundingClientRect();
   requestAnimationFrame(()=>{
-    fly.style.transform = `translate(${cartBtn.left - rect.left}px, ${cartBtn.top - rect.top}px) scale(.2)`;
+    fly.style.transform = `translate(${cartBtn.left - rect.left}px, ${cartBtn.top - rect.top}px) scale(.22)`;
     fly.style.opacity = '0';
   });
   setTimeout(()=>fly.remove(),850);
@@ -500,7 +491,6 @@ document.getElementById('checkoutBtn').addEventListener('click', ()=>{
   msg += `Total: Rp ${formatRp(totalSum)}`;
   // open WA
   window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, '_blank');
-  // close cart popup
   cartPopup.style.display='none';
 });
 
@@ -511,11 +501,12 @@ document.getElementById('menuList').querySelectorAll('li').forEach(li=>{
 document.getElementById('drawer').querySelectorAll('li').forEach(li=>{
   li.addEventListener('click', ()=>{ const key=li.dataset.key; showPlatform(key); toggleDrawer(false); });
 });
+
+/* admin buttons */
 document.getElementById('adminBtn').addEventListener('click', ()=>contactAdmin());
 document.getElementById('drawerAdmin').addEventListener('click', ()=>{ contactAdmin(); toggleDrawer(false); });
 
 function showPlatform(key){
-  // if key valid -> render platform services
   if(PLATFORMS[key]) renderServiceList(key);
   else alert('Platform tidak ditemukan');
 }
@@ -529,16 +520,13 @@ document.getElementById('closeDrawer').addEventListener('click', ()=>toggleDrawe
 
 /* ================ THEME TOGGLE ================= */
 const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', ()=>{
-  document.body.classList.toggle('dark');
-});
+themeToggle.addEventListener('click', ()=>{ document.body.classList.toggle('dark'); });
 
 /* ================ DEVICE MODE (A: manual full) ================= */
 const deviceToggle = document.getElementById('deviceToggle');
 const deviceLabel = document.getElementById('deviceLabel');
 let deviceState = 'phone'; // phone / tablet / laptop
 function applyDeviceMode(state){
-  // remove previous classes
   document.body.classList.remove('device-phone','device-tablet','device-laptop');
   if(state==='phone'){ document.body.classList.add('device-phone'); deviceToggle.textContent='📱'; deviceLabel.innerText='Phone'; }
   else if(state==='tablet'){ document.body.classList.add('device-tablet'); deviceToggle.textContent='📟'; deviceLabel.innerText='Tablet'; }
@@ -549,9 +537,7 @@ deviceToggle.addEventListener('click', ()=>{
   else if(deviceState==='tablet') deviceState='laptop';
   else deviceState='phone';
   applyDeviceMode(deviceState);
-  // if phone mode, open drawer by default for convenience
-  if(deviceState==='phone') toggleDrawer(true);
-  else toggleDrawer(false);
+  if(deviceState==='phone') toggleDrawer(true); else toggleDrawer(false);
 });
 applyDeviceMode(deviceState);
 
@@ -576,66 +562,39 @@ const ONBOARD = {
 };
 
 function showOnboard(){
-  // show only if not seen
   if(localStorage.getItem('zayen_onboard_seen')){ orderPopup.style.display='none'; return; }
   orderPopup.style.display='flex';
   renderOnboard();
 }
 function renderOnboard(){
   const data = ONBOARD[lang][onboardStep-1];
-  document.querySelector('#orderPopup .popup strong')?.remove?.(); // not necessary; Update contents instead
-  document.querySelector('#orderPopup .popup h3')?.remove?.();
-  // update content
-  document.querySelector('#orderPopup .popup').querySelector('strong')?.remove?.();
-  // simpler: set text
-  document.querySelector('#orderPopup .popup strong')?.remove?.(); // ignore older
-  document.querySelector('#orderPopup .popup').querySelector('strong'); // not used
-  // set inner manual
-  document.querySelector('#orderPopup .popup').querySelector('strong');
-  // update description
-  document.getElementById('onboardContent').querySelector('p').innerText = data.text;
-  // set next button label
+  document.getElementById('onboardTitle').innerText = data.title;
+  document.getElementById('onboardText').innerText = data.text;
   nextOnboard.innerText = (lang==='id') ? (onboardStep<3 ? 'Berikutnya' : 'Mulai Sekarang') : (onboardStep<3 ? 'Next' : 'Start Now');
   skipOnboard.innerText = (lang==='id') ? 'Lewati' : 'Skip';
   langSwitch.innerText = lang.toUpperCase();
 }
-langSwitch.addEventListener('click', ()=>{
-  lang = (lang==='id') ? 'en' : 'id';
-  renderOnboard();
-});
-nextOnboard.addEventListener('click', ()=>{
-  if(onboardStep<3){ onboardStep++; renderOnboard(); return; }
-  // finish
-  localStorage.setItem('zayen_onboard_seen','1');
-  orderPopup.style.display='none';
-});
+langSwitch.addEventListener('click', ()=>{ lang = (lang==='id') ? 'en' : 'id'; renderOnboard(); });
+nextOnboard.addEventListener('click', ()=>{ if(onboardStep<3){ onboardStep++; renderOnboard(); return;} localStorage.setItem('zayen_onboard_seen','1'); orderPopup.style.display='none'; });
 skipOnboard.addEventListener('click', ()=>{ localStorage.setItem('zayen_onboard_seen','1'); orderPopup.style.display='none'; });
-
 showOnboard();
 
-/* ================ SPLASH TIMING (adaptive 5-10s) ================= */
+/* ================ SPLASH TIMING (adaptive) ================= */
 window.addEventListener('load', ()=>{
-  // determine simple device perf: use timing API or user agent? We'll approximate:
-  // If low-memory / small device, use shorter 5s; else 6-8s. Keep it simple:
   const u = navigator.userAgent || '';
   const isMobile = /Mobi|Android/i.test(u);
-  const duration = isMobile ? 5000 : 7000; // 5s mobile, 7s desktop
+  const duration = isMobile ? 5000 : 7000;
   setTimeout(()=>{ const sp = document.getElementById('splash'); if(sp) sp.style.display='none'; }, duration);
 });
 
-/* ================ INITIALIZE: nothing selected yet ================ */
-renderCart(); // show empty
+/* ================ INITIALIZE ================ */
+renderCart(); // empty cart initially
 
 /* ================= ADMIN CONTACT ================= */
-function contactAdmin(){
-  window.open(`https://wa.me/${ADMIN_WA}`, '_blank');
-}
+function contactAdmin(){ window.open(`https://wa.me/${ADMIN_WA}`, '_blank'); }
 
-/* ================= QUICK: open drawer on phone when header brand clicked (optional) ================ */
-document.querySelector('.brand').addEventListener('click', ()=>{
-  if(deviceState==='phone') toggleDrawer(true);
-});
+/* optional: brand click opens drawer on phone for convenience */
+document.querySelector('.brand').addEventListener('click', ()=>{ if(deviceState==='phone') toggleDrawer(true); });
 </script>
 </body>
 </html>
-
