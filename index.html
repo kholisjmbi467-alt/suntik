@@ -1,484 +1,489 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Zayen Hosting — Layanan Sosial Media</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zayen Hosting - Jasa Layanan Sosial Media</title>
+<style>
+/* 🌈 Global Theme */
+:root {
+  --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  --card-bg: rgba(255,255,255,0.1);
+  --text-light: #fff;
+  --shadow: 0 8px 25px rgba(0,0,0,0.2);
+  --border-radius: 15px;
+  --transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+}
+body {
+  margin: 0;
+  background: var(--primary-gradient);
+  color: var(--text-light);
+  overflow-x: hidden;
+}
 
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#5B21B6',    // deep purple
-            accent: '#06B6D4',     // cyan accent
-            soft: '#EEF2FF'        // very light
-          },
-          boxShadow: {
-            'soft-lg': '0 10px 30px rgba(91,33,182,0.12)'
-          }
-        }
-      }
-    }
-  </script>
+/* 🌐 Header */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+header img {
+  height: 45px;
+  margin-right: 10px;
+}
+header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-  <style>
-    /* Small custom helpers */
-    .card-3d { transform-style: preserve-3d; perspective: 1000px; }
-    .card-inner { transition: transform .35s cubic-bezier(.2,.9,.3,1), box-shadow .35s; transform-origin:center; }
-    .card-3d:hover .card-inner { transform: translateY(-8px) rotateX(1.5deg) translateZ(8px); box-shadow: 0 20px 40px rgba(0,0,0,0.12); }
-    .service-row:hover { background: rgba(91,33,182,0.03); }
-    /* small responsive tweak */
-    @media (max-width: 768px) {
-      .sticky-top-md { position: static; }
-    }
-  </style>
+/* ⚙️ Layout */
+.container {
+  display: flex;
+  height: calc(100vh - 70px);
+}
+
+/* 🧭 Sidebar */
+.sidebar {
+  width: 230px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.sidebar button {
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.sidebar button:hover {
+  background: rgba(255,255,255,0.3);
+  transform: scale(1.05);
+}
+
+/* 🧱 Main Content */
+main {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+}
+h2 {
+  text-align: center;
+  font-weight: 600;
+}
+.services {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+.service-card {
+  width: 270px;
+  background: var(--card-bg);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: var(--transition);
+  transform: translateY(15px);
+  opacity: 0;
+}
+.service-card.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.service-card:hover {
+  transform: translateY(-8px) scale(1.03);
+}
+.service-card input {
+  width: 80%;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 10px;
+  text-align: center;
+}
+.warning {
+  color: #ff4d4d;
+  font-size: 12px;
+}
+
+/* 🛒 Cart */
+.cart {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background: #ff5722;
+  color: white;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  z-index: 2000;
+}
+.cart:hover {
+  transform: scale(1.1);
+}
+.cart-popup {
+  position: fixed;
+  bottom: 100px;
+  right: 25px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(15px);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  display: none;
+  width: 300px;
+}
+.cart-popup h3 {
+  margin-top: 0;
+}
+.cart-item button {
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 3px 8px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.checkout-btn {
+  background: #00c853;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* 💳 Payment Table */
+.payment-table {
+  width: 100%;
+  margin-top: 10px;
+}
+.payment-table td {
+  padding: 5px;
+  text-align: left;
+  vertical-align: middle;
+}
+.payment-table img {
+  width: 25px;
+  height: 25px;
+  margin-right: 5px;
+}
+
+/* 🌍 Onboarding Popup */
+#onboarding {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+.onboard-content {
+  background: rgba(255,255,255,0.2);
+  border-radius: var(--border-radius);
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  color: white;
+  animation: fadeIn 0.6s ease;
+}
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+.onboard-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 25px;
+}
+.onboard-buttons button {
+  flex: 1;
+  margin: 0 5px;
+  padding: 10px;
+  border-radius: var(--border-radius);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.onboard-buttons button:hover {
+  transform: scale(1.05);
+}
+.lang-switch {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  background: rgba(255,255,255,0.2);
+  padding: 6px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.lang-switch:hover {
+  background: rgba(255,255,255,0.4);
+}
+</style>
 </head>
-<body class="bg-gray-50 text-gray-800 antialiased">
+<body>
 
-  <!-- HEADER -->
-  <header class="bg-gradient-to-r from-indigo-600 via-purple-600 to-violet-500 text-white sticky top-0 z-50 shadow-md">
-    <div class="max-w-7xl mx-auto flex items-center justify-between px-5 py-3">
-      <div class="flex items-center gap-3">
-        <!-- Logo (file must be in same folder) -->
-        <img id="brandLogo" src="Hitam Putih Sederhana Komunitas Burung Logo_20251108_222453_0000.png" alt="Zayen Hosting Logo" class="h-12 w-12 object-contain rounded-md bg-white/10 p-1">
-        <div>
-          <div class="font-bold text-lg">Zayen Hosting</div>
-          <div class="text-sm opacity-80">Professional Social Media Services</div>
-        </div>
-      </div>
+<header>
+  <h1><img src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting"> Zayen Hosting</h1>
+</header>
 
-      <div class="flex items-center gap-3">
-        <button id="themeToggle" class="bg-white/20 hover:bg-white/30 px-3 py-2 rounded-lg flex items-center gap-2">
-          <span id="themeIcon">🌙</span>
-          <span class="text-sm">Mode</span>
-        </button>
-        <a href="#" onclick="contactAdmin()" class="bg-white text-indigo-600 hover:bg-white/90 px-3 py-2 rounded-lg font-medium shadow">Hubungi Admin</a>
-      </div>
-    </div>
-  </header>
-
-  <!-- LAYOUT -->
-  <div class="max-w-7xl mx-auto px-5 py-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-
-    <!-- LEFT: Platform menu vertical -->
-    <aside class="md:col-span-1 space-y-4">
-      <div class="bg-white rounded-2xl p-4 shadow">
-        <h4 class="text-indigo-600 font-semibold mb-3">Pilih Platform</h4>
-        <div id="platformList" class="space-y-3">
-          <!-- JS will render platform buttons here -->
-        </div>
-      </div>
-
-      <div class="bg-gradient-to-br from-purple-500 to-indigo-500 text-white rounded-2xl p-6 shadow-lg card-3d">
-        <div class="card-inner">
-          <h5 class="text-lg font-semibold">Promo Paket Bulanan</h5>
-          <p class="text-sm mt-2 opacity-90">Diskon untuk paket besar. Hubungi admin untuk penawaran khusus & reseller.</p>
-          <div class="mt-4">
-            <button onclick="contactAdmin()" class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg">Hubungi Admin</button>
-          </div>
-        </div>
-      </div>
-    </aside>
-
-    <!-- CENTER: Step 1 & Step 2 panels -->
-    <section class="md:col-span-2 space-y-6">
-
-      <div class="flex items-center justify-between">
-        <h2 class="text-2xl font-bold">Layanan</h2>
-        <p class="text-sm text-gray-500">Pilih platform → lalu pilih jenis layanan dari platform tersebut.</p>
-      </div>
-
-      <!-- STEP 1: (Platform) summary (read-only) -->
-      <div id="step1" class="bg-white rounded-2xl p-4 shadow">
-        <div class="text-sm text-gray-600">Langkah 1: Pilih platform di kolom kiri. Platform yang dipilih muncul di sini.</div>
-        <div id="selectedPlatform" class="mt-3 text-lg font-semibold text-indigo-600">Belum memilih platform</div>
-      </div>
-
-      <!-- STEP 2: services table (renders based on platform) -->
-      <div id="servicesPanel" class="bg-white rounded-2xl p-4 shadow space-y-4">
-        <div class="flex items-center justify-between">
-          <div>
-            <div class="text-sm text-gray-500">Langkah 2: Pilih jenis layanan</div>
-            <div id="servicesTitle" class="text-lg font-semibold">Silakan pilih platform</div>
-          </div>
-          <div id="serviceCount" class="text-sm text-gray-500"></div>
-        </div>
-
-        <!-- Table / list of services -->
-        <div class="overflow-x-auto">
-          <table id="servicesTable" class="min-w-full text-sm">
-            <thead>
-              <tr class="text-left text-xs text-gray-500">
-                <th class="py-2 px-3">Jenis Layanan</th>
-                <th class="py-2 px-3">Harga (Rp)</th>
-                <th class="py-2 px-3">Min</th>
-                <th class="py-2 px-3">Max</th>
-                <th class="py-2 px-3">Aksi</th>
-              </tr>
-            </thead>
-            <tbody id="servicesBody">
-              <!-- Rendered by JS -->
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Detail card: muncul setelah klik layanan -->
-        <div id="serviceDetail" class="hidden bg-gradient-to-br from-white to-white rounded-2xl p-4 shadow card-3d">
-          <div class="card-inner flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-            <div>
-              <div id="detailName" class="text-lg font-semibold text-indigo-600"></div>
-              <div id="detailPrice" class="text-sm text-gray-600 mt-1"></div>
-            </div>
-            <div class="flex items-center gap-3 mt-2 sm:mt-0">
-              <input id="detailQty" type="number" min="1" placeholder="Jumlah" class="w-40 border rounded-lg px-3 py-2" />
-              <button id="addToCartBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg">Tambahkan ke Keranjang</button>
-            </div>
-            <div id="detailWarning" class="text-sm text-red-500 mt-2 sm:mt-0"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT: Cart + Payment chooser -->
-    <aside class="md:col-span-1 sticky top-28 space-y-4 sticky-top-md">
-
-      <!-- Keranjang -->
-      <div id="cartCard" class="bg-white rounded-2xl p-5 shadow-lg">
-        <h4 class="font-semibold text-lg">Keranjang</h4>
-        <div id="cartItems" class="mt-3 space-y-3 text-sm text-gray-700">
-          <div class="text-gray-500">Belum ada item</div>
-        </div>
-        <div class="mt-4 flex items-center justify-between">
-          <div class="font-semibold">Total:</div>
-          <div class="font-semibold" id="cartTotal">Rp 0</div>
-        </div>
-        <button id="checkoutBtn" onclick="openPayment()" class="mt-4 w-full bg-gradient-to-r from-indigo-600 to-violet-600 text-white py-2 rounded-lg disabled:opacity-50" disabled>Checkout</button>
-      </div>
-
-      <!-- PAYMENT: tiles (hidden until checkout) -->
-      <div id="paymentCard" class="hidden bg-white rounded-2xl p-5 shadow-lg">
-        <h4 class="font-semibold text-lg">Pilih Metode Pembayaran</h4>
-        <p class="text-sm text-gray-500 mt-1">Klik metode untuk lanjut ke WhatsApp checkout</p>
-
-        <div class="mt-4 grid grid-cols-1 gap-3">
-          <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('OVO')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Ovo_Logo.png" alt="OVO" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
-            <div class="text-left">
-              <div class="font-medium">OVO</div>
-              <div class="text-xs text-gray-500">Dompet Digital</div>
-            </div>
-            <div class="ml-auto text-sm text-gray-600">Transfer</div>
-          </button>
-
-          <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('DANA')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/0/02/Dana_Logo.png" alt="DANA" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
-            <div class="text-left">
-              <div class="font-medium">DANA</div>
-              <div class="text-xs text-gray-500">Dompet Digital</div>
-            </div>
-            <div class="ml-auto text-sm text-gray-600">Transfer</div>
-          </button>
-
-          <button class="flex items-center gap-3 p-3 border rounded-lg hover:shadow-md" onclick="completeCheckout('QRIS')">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/6/6e/QRIS_Logo.png" alt="QRIS" class="w-10 h-10 object-contain" onerror="this.style.display='none'">
-            <div class="text-left">
-              <div class="font-medium">QRIS</div>
-              <div class="text-xs text-gray-500">Scan & Bayar</div>
-            </div>
-            <div class="ml-auto text-sm text-gray-600">Scan</div>
-          </button>
-        </div>
-
-        <div class="mt-4 flex justify-end">
-          <button class="px-4 py-2 rounded-lg text-sm" onclick="closePayment()">Batal</button>
-        </div>
-      </div>
-
-    </aside>
+<div class="container">
+  <div class="sidebar">
+    <button onclick="showServices('facebook')">📘 Facebook</button>
+    <button onclick="showServices('instagram')">📸 Instagram</button>
+    <button onclick="showServices('tiktok')">🎵 TikTok</button>
+    <button onclick="showServices('whatsapp')">💬 WhatsApp</button>
+    <button onclick="contactAdmin()">👨‍💼 Admin 1</button>
   </div>
 
-  <footer class="mt-10 py-6 bg-white text-center text-sm text-gray-500">
-    © <span id="year"></span> Zayen Hosting — All rights reserved.
-  </footer>
+  <main>
+    <h2>Pilih Layanan Anda</h2>
 
-  <script>
-    // ===== Data: platform -> services (you provided Facebook items) =====
-    const data = {
-      whatsapp: {
-        label: 'WhatsApp',
-        icon: '📱',
-        services: [
-          { name: 'Member Saluran WhatsApp', price: 38, min: 10, max: 50000 },
-          { name: 'Post Reaction WhatsApp', price: 35, min: 10, max: 50000 }
-        ]
-      },
-      tiktok: {
-        label: 'TikTok',
-        icon: '🎵',
-        services: [
-          { name: 'TikTok Views', price: 8, min: 100, max: 2147483647 },
-          { name: 'TikTok Like', price: 8, min: 10, max: 30000 }
-        ]
-      },
-      instagram: {
-        label: 'Instagram',
-        icon: '📸',
-        services: [
-          { name: 'Instagram Followers', price: 20, min: 10, max: 100000 },
-          { name: 'Instagram Likes', price: 6, min: 10, max: 50000 }
-        ]
-      },
-      facebook: {
-        label: 'Facebook',
-        icon: 'f',
-        services: [
-          // <-- user-specified items exactly as provided -->
-          { name: 'Facebook Like Post', price: 8, min: 50, max: 50000 },
-          { name: 'Facebook Video Views', price: 3, min: 100, max: 10000000 },
-          { name: 'Facebook Reels Views', price: 3, min: 100, max: 10000000 }
-        ]
-      }
-    };
+    <!-- Facebook -->
+    <div id="facebook" class="services">
+      <div class="service-card" data-name="Facebook Like Post" data-price="8" data-min="50" data-max="50000">
+        Facebook Like Post <br>Rp 8 | Min: 50 | Max: 50.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="Facebook Video Views" data-price="3" data-min="100" data-max="10000000">
+        Facebook Video Views <br>Rp 3 | Min: 100 | Max: 10.000.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="Facebook Reels Views" data-price="3" data-min="100" data-max="10000000">
+        Facebook Reels Views <br>Rp 3 | Min: 100 | Max: 10.000.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+    </div>
 
-    // ===== App state =====
-    let selectedPlatform = null;
-    let selectedService = null;
-    const cart = [];
+    <!-- Instagram -->
+    <div id="instagram" class="services">
+      <div class="service-card" data-name="Instagram Save" data-price="4" data-min="10" data-max="200000">
+        Instagram Save <br>Rp 4 | Min: 10 | Max: 200.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="Instagram Repost" data-price="12" data-min="1" data-max="100000">
+        Instagram Repost <br>Rp 12 | Min: 1 | Max: 100.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="Instagram Video Views" data-price="3" data-min="100" data-max="100000">
+        Instagram Video Views <br>Rp 3 | Min: 100 | Max: 100.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+    </div>
 
-    // ===== UI references =====
-    const platformList = document.getElementById('platformList');
-    const selectedPlatformEl = document.getElementById('selectedPlatform');
-    const servicesTitle = document.getElementById('servicesTitle');
-    const servicesBody = document.getElementById('servicesBody');
-    const serviceCount = document.getElementById('serviceCount');
-    const serviceDetail = document.getElementById('serviceDetail');
-    const detailName = document.getElementById('detailName');
-    const detailPrice = document.getElementById('detailPrice');
-    const detailQty = document.getElementById('detailQty');
-    const addToCartBtn = document.getElementById('addToCartBtn');
-    const detailWarning = document.getElementById('detailWarning');
-    const cartItems = document.getElementById('cartItems');
-    const cartTotal = document.getElementById('cartTotal');
-    const checkoutBtn = document.getElementById('checkoutBtn');
-    const paymentCard = document.getElementById('paymentCard');
+    <!-- TikTok -->
+    <div id="tiktok" class="services">
+      <div class="service-card" data-name="TikTok Followers" data-price="25" data-min="10" data-max="5000000">
+        TikTok Followers <br>Rp 25 | Min: 10 | Max: 5.000.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="TikTok Favorite/Save" data-price="20" data-min="100" data-max="3000">
+        TikTok Favorite/Save <br>Rp 20 | Min: 100 | Max: 3.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="TikTok Share" data-price="3" data-min="10" data-max="2147483647">
+        TikTok Share <br>Rp 3 | Min: 10 | Max: 2.147.483.647
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+    </div>
 
-    // ===== Init platforms list =====
-    function renderPlatforms() {
-      platformList.innerHTML = '';
-      for (const key of Object.keys(data)) {
-        const p = data[key];
-        const btn = document.createElement('button');
-        btn.className = 'flex items-center gap-3 px-4 py-3 rounded-xl bg-white shadow hover:shadow-lg transition w-full';
-        btn.innerHTML = `
-          <div class="w-10 h-10 flex items-center justify-center rounded-lg text-white" style="background: linear-gradient(135deg,#7c3aed,#06b6d4)">${p.icon}</div>
-          <div class="text-left">
-            <div class="font-medium">${p.label}</div>
-            <div class="text-xs text-gray-500">${p.services.length} layanan</div>
-          </div>
-        `;
-        btn.onclick = () => selectPlatform(key);
-        platformList.appendChild(btn);
-      }
-    }
+    <!-- WhatsApp -->
+    <div id="whatsapp" class="services">
+      <div class="service-card" data-name="Member Saluran WhatsApp" data-price="38" data-min="10" data-max="50000">
+        Member Saluran WhatsApp <br>Rp 38 | Min: 10 | Max: 50.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+      <div class="service-card" data-name="Post Reaction WhatsApp" data-price="35" data-min="10" data-max="50000">
+        Post Reaction WhatsApp <br>Rp 35 | Min: 10 | Max: 50.000
+        <input type="number" placeholder="Jumlah" onchange="updateCart(this)">
+        <div class="warning"></div>
+      </div>
+    </div>
+  </main>
+</div>
 
-    // ===== Platform selection (Step1) =====
-    function selectPlatform(key) {
-      selectedPlatform = key;
-      selectedService = null;
-      selectedPlatformEl.textContent = `${data[key].label}`;
-      servicesTitle.textContent = `Layanan ${data[key].label}`;
-      serviceCount.textContent = `${data[key].services.length} pilihan`;
-      renderServicesTable(key);
-      hideDetail();
-      // scroll to services
-      document.getElementById('servicesPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+<!-- 🛒 Cart -->
+<div class="cart" onclick="toggleCart()">🛒</div>
+<div class="cart-popup" id="cartPopup">
+  <h3>Keranjang</h3>
+  <div id="cartItems"></div>
+  <div>Total: Rp <span id="cartTotal">0</span></div>
+  <table class="payment-table">
+    <tr><td><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/OVO_logo.svg"> OVO</td></tr>
+    <tr><td><img src="https://upload.wikimedia.org/wikipedia/commons/f/f0/DANA_Logo.svg"> DANA</td></tr>
+    <tr><td><img src="https://upload.wikimedia.org/wikipedia/commons/3/3b/QRIS_logo_red.png"> QRIS</td></tr>
+  </table>
+  <button class="checkout-btn" onclick="checkout()">Checkout</button>
+</div>
 
-    // ===== Render services table (Step2) =====
-    function renderServicesTable(key) {
-      const list = data[key].services;
-      servicesBody.innerHTML = '';
-      list.forEach((s, idx) => {
-        const tr = document.createElement('tr');
-        tr.className = 'service-row cursor-pointer';
-        tr.innerHTML = `
-          <td class="py-3 px-3">${s.name}</td>
-          <td class="py-3 px-3">Rp ${s.price}</td>
-          <td class="py-3 px-3">${s.min}</td>
-          <td class="py-3 px-3">${s.max.toLocaleString('id')}</td>
-          <td class="py-3 px-3"><button class="px-3 py-1 bg-indigo-600 text-white rounded-md" data-idx="${idx}">Pilih</button></td>
-        `;
-        // click row button
-        tr.querySelector('button').onclick = (e) => {
-          e.stopPropagation();
-          showServiceDetail(key, idx);
-        };
-        // also row click
-        tr.onclick = () => showServiceDetail(key, idx);
-        servicesBody.appendChild(tr);
-      });
-    }
+<!-- 🌍 Onboarding -->
+<div id="onboarding">
+  <div class="onboard-content">
+    <div class="lang-switch" onclick="switchLang()">🇮🇩 / 🇬🇧</div>
+    <h2 id="stepTitle">Langkah 1 – Pilih Platform</h2>
+    <p id="stepText">Pilih aplikasi tempat Anda ingin menambah layanan, seperti Facebook, Instagram, atau TikTok.</p>
+    <div class="onboard-buttons">
+      <button id="skipBtn" onclick="skipOnboard()">Lewati</button>
+      <button id="nextBtn" onclick="nextStep()">Berikutnya</button>
+    </div>
+  </div>
+</div>
 
-    // ===== Show service detail & quantity form =====
-    function showServiceDetail(platformKey, serviceIdx) {
-      const svc = data[platformKey].services[serviceIdx];
-      selectedService = { platform: platformKey, ...svc };
-      detailName.textContent = `${svc.name}`;
-      detailPrice.textContent = `Rp ${svc.price} | Min: ${svc.min} | Max: ${svc.max.toLocaleString('id')}`;
-      detailQty.value = svc.min;
-      detailQty.min = svc.min;
-      detailQty.max = svc.max;
-      detailWarning.textContent = '';
-      serviceDetail.classList.remove('hidden');
-      detailQty.focus();
-      // scroll into view
-      serviceDetail.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+<script>
+let cart = [];
+let step = 1;
+let lang = 'id';
 
-    function hideDetail() {
-      serviceDetail.classList.add('hidden');
-    }
+const steps = {
+  id: [
+    ["Langkah 1 – Pilih Platform", "Pilih aplikasi tempat Anda ingin menambah layanan, seperti Facebook, Instagram, atau TikTok."],
+    ["Langkah 2 – Pilih Jenis Layanan", "Setelah memilih platform, pilih jenis layanan spesifik — misalnya 'Instagram Save' atau 'Facebook Like Post'."],
+    ["Langkah 3 – Pembayaran", "Tambahkan layanan ke keranjang, pilih metode pembayaran, lalu hubungi admin untuk konfirmasi pesanan Anda."]
+  ],
+  en: [
+    ["Step 1 – Choose Platform", "Select the social media platform you want to enhance, such as Facebook, Instagram, or TikTok."],
+    ["Step 2 – Choose Service Type", "After selecting a platform, choose the specific service — for example, 'Instagram Save' or 'Facebook Like Post'."],
+    ["Step 3 – Checkout & Payment", "Add the service to your cart, select a payment method, and contact admin to confirm your order."]
+  ]
+};
 
-    // ===== Add to cart =====
-    addToCartBtn.addEventListener('click', () => {
-      if (!selectedService) return;
-      const qty = parseInt(detailQty.value || 0);
-      if (isNaN(qty) || qty < selectedService.min) {
-        detailWarning.textContent = `Minimal pembelian ${selectedService.min}`;
-        return;
-      }
-      if (qty > selectedService.max) {
-        detailWarning.textContent = `Maksimal pembelian ${selectedService.max.toLocaleString('id')}`;
-        return;
-      }
-      // find in cart
-      const idx = cart.findIndex(i => i.name === selectedService.name && i.platform === selectedService.platform);
-      const total = qty * selectedService.price;
-      if (idx !== -1) {
-        cart[idx].qty = qty;
-        cart[idx].total = total;
-      } else {
-        cart.push({
-          platform: selectedService.platform,
-          name: selectedService.name,
-          price: selectedService.price,
-          qty, total
-        });
-      }
-      renderCart();
-      // clear detail
-      hideDetail();
-    });
+function showServices(platform) {
+  document.querySelectorAll('.services').forEach(s => s.style.display='none');
+  const div = document.getElementById(platform);
+  div.style.display='flex';
+  div.querySelectorAll('.service-card').forEach((card,i)=>{
+    setTimeout(()=>card.classList.add('visible'), i*100);
+  });
+}
 
-    // ===== Render cart =====
-    function renderCart() {
-      cartItems.innerHTML = '';
-      if (cart.length === 0) {
-        cartItems.innerHTML = '<div class="text-gray-500">Belum ada item</div>';
-        cartTotal.textContent = 'Rp 0';
-        checkoutBtn.disabled = true;
-        return;
-      }
-      let total = 0;
-      cart.forEach((it, idx) => {
-        total += it.total;
-        const div = document.createElement('div');
-        div.className = 'flex items-center justify-between';
-        div.innerHTML = `
-          <div>
-            <div class="font-medium">${it.name} <span class="text-xs text-gray-500">(${data[it.platform].label}) x${it.qty}</span></div>
-            <div class="text-xs text-gray-500">Rp ${it.price} / unit</div>
-          </div>
-          <div class="text-right">
-            <div class="font-semibold">Rp ${it.total}</div>
-            <button class="text-red-500 text-xs mt-1" onclick="removeItem(${idx})">Hapus</button>
-          </div>
-        `;
-        cartItems.appendChild(div);
-      });
-      cartTotal.textContent = `Rp ${total}`;
-      checkoutBtn.disabled = false;
-    }
+function updateCart(input) {
+  const card = input.parentElement;
+  const name = card.dataset.name;
+  const price = parseInt(card.dataset.price);
+  const min = parseInt(card.dataset.min);
+  const max = parseInt(card.dataset.max);
+  const qty = parseInt(input.value);
+  const warning = card.querySelector('.warning');
 
-    function removeItem(i){
-      cart.splice(i,1);
-      renderCart();
-    }
+  if(qty < min) { warning.innerText = `Minimal pembelian ${min}`; return; }
+  if(qty > max) { warning.innerText = `Maksimal pembelian ${max}`; return; }
+  warning.innerText = '';
 
-    // ===== Payment flow =====
-    function openPayment(){
-      if (cart.length === 0) { alert('Keranjang kosong!'); return; }
-      paymentCard.classList.remove('hidden');
-      paymentCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    function closePayment(){
-      paymentCard.classList.add('hidden');
-    }
+  const index = cart.findIndex(i=>i.name===name);
+  if(qty===0) { if(index!==-1) cart.splice(index,1); }
+  else { if(index!==-1) cart[index].qty=qty; else cart.push({name,price,qty}); }
+  renderCart();
+}
 
-    function completeCheckout(method){
-      if (cart.length === 0) { alert('Keranjang kosong!'); return; }
-      let total = 0;
-      let msg = 'Halo Admin Zayen Hosting, saya ingin memesan layanan:\\n';
-      cart.forEach(i => {
-        msg += `- ${i.name} (${data[i.platform].label}) x${i.qty} = Rp ${i.total}\\n`;
-        total += i.total;
-      });
-      msg += `Total: Rp ${total}\\nMetode Pembayaran: ${method}\\nMohon konfirmasi dan instruksi pembayaran. Terima kasih.`;
+function renderCart(){
+  const cartItems=document.getElementById('cartItems');
+  cartItems.innerHTML='';
+  let total=0;
+  cart.forEach(item=>{
+    const div=document.createElement('div');
+    div.className='cart-item';
+    div.innerHTML=`${item.name} x${item.qty} = Rp ${item.price*item.qty} <button onclick="removeFromCart('${item.name}')">Hapus</button>`;
+    cartItems.appendChild(div);
+    total+=item.price*item.qty;
+  });
+  document.getElementById('cartTotal').innerText=total;
+}
 
-      const wa = '6283153044178';
-      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(msg)}`, '_blank');
-      closePayment();
-    }
+function removeFromCart(name){
+  cart=cart.filter(i=>i.name!==name);
+  renderCart();
+}
 
-    // expose for buttons in markup:
-    window.completeCheckout = completeCheckout;
-    window.openPayment = openPayment;
-    window.closePayment = closePayment;
+function toggleCart(){
+  const popup=document.getElementById('cartPopup');
+  popup.style.display=popup.style.display==='block'?'none':'block';
+}
 
-    // ===== Contact admin =====
-    function contactAdmin(){
-      const wa = '6283153044178';
-      window.open(`https://wa.me/${wa}`, '_blank');
-    }
-    window.contactAdmin = contactAdmin;
+function checkout(){
+  if(cart.length===0){alert("Keranjang kosong!");return;}
+  let msg="Halo Admin, saya ingin membeli layanan:\n";
+  let total=0;
+  cart.forEach(item=>{
+    msg+=`${item.name} x${item.qty} = Rp ${item.price*item.qty}\n`;
+    total+=item.price*item.qty;
+  });
+  msg+=`Total: Rp ${total}`;
+  window.open(`https://wa.me/6283153044178?text=${encodeURIComponent(msg)}`);
+}
 
-    // ===== Theme toggle & logo fallback =====
-    const themeToggle = document.getElementById('themeToggle');
-    const themeIcon = document.getElementById('themeIcon');
-    let dark = false;
-    themeToggle.onclick = () => {
-      dark = !dark;
-      document.documentElement.classList.toggle('dark', dark);
-      if (dark) {
-        document.body.classList.add('bg-gray-900', 'text-gray-100');
-        themeIcon.textContent = '☀️';
-      } else {
-        document.body.classList.remove('bg-gray-900', 'text-gray-100');
-        themeIcon.textContent = '🌙';
-      }
-    };
+function contactAdmin(){
+  window.open(`https://wa.me/6283153044178`);
+}
 
-    // logo fallback if file missing
-    window.addEventListener('load', () => {
-      const img = document.getElementById('brandLogo');
-      img.onerror = function(){
-        const wrapper = document.createElement('div');
-        wrapper.className = 'h-12 w-12 rounded-md bg-white/10 flex items-center justify-center text-white font-bold';
-        wrapper.innerText = 'ZH';
-        img.replaceWith(wrapper);
-      };
-    });
+/* 🌍 Onboarding */
+function nextStep(){
+  if(step<3) step++;
+  else skipOnboard();
+  document.getElementById('stepTitle').innerText=steps[lang][step-1][0];
+  document.getElementById('stepText').innerText=steps[lang][step-1][1];
+  if(step===3) document.getElementById('nextBtn').innerText=lang==='id'?'Selesai':'Finish';
+}
+function skipOnboard(){
+  document.getElementById('onboarding').style.display='none';
+}
+function switchLang(){
+  lang = lang==='id'?'en':'id';
+  step=1;
+  document.getElementById('stepTitle').innerText=steps[lang][0][0];
+  document.getElementById('stepText').innerText=steps[lang][0][1];
+  document.getElementById('skipBtn').innerText=lang==='id'?'Lewati':'Skip';
+  document.getElementById('nextBtn').innerText=lang==='id'?'Berikutnya':'Next';
+}
+</script>
 
-    // show current year
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // init app UI
-    renderPlatforms();
-    renderCart();
-    // default: show nothing, user picks platform
-  </script>
 </body>
 </html>
