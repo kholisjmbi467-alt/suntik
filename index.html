@@ -1,586 +1,347 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Zayen Hosting — Layanan Sosial Media</title>
-<style>
-/* ================= ROOT / THEME ================= */
-:root{
-  --g1:#7a00ff; --g2:#007bff;
-  --gradient: linear-gradient(135deg,var(--g1),var(--g2));
-  --glass: rgba(255,255,255,0.06);
-  --glass-2: rgba(255,255,255,0.12);
-  --card-radius:14px;
-  --shadow: 0 12px 40px rgba(0,0,0,0.18);
-  --accent:#06b6d4;
-  --text-dark:#0b1220;
-  --text-light:#ffffff;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
-  background: linear-gradient(180deg,#eef6ff 0%, #f6f9ff 100%);
-  color:var(--text-dark);
-  transition:background .35s,color .35s;
-  -webkit-font-smoothing:antialiased;
-}
-body.dark{
-  background: linear-gradient(180deg,#05060a 0%,#071126 100%);
-  color:var(--text-light);
-}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zayen Hosting — Layanan Sosial Media</title>
+  <style>
+    /* =============== ROOT / THEME =============== */
+    :root {
+      --g1:#7a00ff;
+      --g2:#007bff;
+      --gradient: linear-gradient(135deg,var(--g1),var(--g2));
+      --glass: rgba(255,255,255,0.06);
+      --glass-2: rgba(255,255,255,0.12);
+      --card-radius:14px;
+      --shadow: 0 12px 40px rgba(0,0,0,0.18);
+      --accent:#06b6d4;
+      --text-dark:#0b1220;
+      --text-light:#ffffff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial;
+      background: linear-gradient(180deg,#eef6ff 0%, #f6f9ff 100%);
+      color:var(--text-dark);
+      transition:background .35s,color .35s;
+      -webkit-font-smoothing:antialiased;
+    }
+    body.dark{
+      background: linear-gradient(180deg,#05060a 0%,#071126 100%);
+      color:var(--text-light);
+    }
 
-/* ================= SPLASH / LOADING ================= */
-#splash{
-  position:fixed; inset:0; z-index:9999;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  background:var(--gradient); color:white; overflow:hidden;
-}
-#splash .logo{
-  width:140px; height:auto; border-radius:12px; box-shadow:0 14px 45px rgba(0,0,0,0.28);
-  animation:logoPulse 3s ease-in-out infinite;
-}
-@keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-#splash .brandText{
-  font-weight:700; font-size:28px; margin-top:18px; opacity:0; letter-spacing:0.6px;
-  animation:brandSlide 7s ease-in-out forwards;
-}
-@keyframes brandSlide{
-  0%{transform:translateX(-110%);opacity:0}
-  20%{transform:translateX(0);opacity:1}
-  60%{transform:translateX(0);opacity:1}
-  100%{transform:translateX(110%);opacity:0}
-}
-.spinner{
-  margin-top:22px; width:46px; height:46px;
-  border-radius:50%; border:5px solid rgba(255,255,255,0.22); border-top-color:rgba(255,255,255,0.95);
-  animation:spin 1.4s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
+    /* =============== SPLASH / LOADING =============== */
+    #splash{
+      position:fixed; inset:0; z-index:9999;
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      background:var(--gradient); color:white; overflow:hidden;
+    }
+    #splash .logo{
+      width:140px; height:auto; border-radius:12px;
+      box-shadow:0 14px 45px rgba(0,0,0,0.28);
+      animation:logoPulse 3s ease-in-out infinite;
+    }
+    @keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+    #splash .brandText{
+      font-weight:700; font-size:28px; margin-top:18px; opacity:0;
+      letter-spacing:0.6px; animation:brandSlide 7s ease-in-out forwards;
+    }
+    @keyframes brandSlide{
+      0%{transform:translateX(-110%);opacity:0}
+      20%,60%{transform:translateX(0);opacity:1}
+      100%{transform:translateX(110%);opacity:0}
+    }
+    .spinner{
+      margin-top:22px; width:46px; height:46px; border-radius:50%;
+      border:5px solid rgba(255,255,255,0.22);
+      border-top-color:rgba(255,255,255,0.95);
+      animation:spin 1.4s linear infinite;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ================= HEADER ================= */
-header{
-  position:sticky; top:0; z-index:900; display:flex; align-items:center; justify-content:space-between;
-  padding:12px 18px; background:var(--gradient); color:white; box-shadow:var(--shadow);
-}
-.brand{display:flex;align-items:center;gap:12px;font-weight:700}
-.brand img{width:44px;height:44px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.25)}
-.brand .title{font-size:18px}
-.header-actions{display:flex;align-items:center;gap:10px}
-.icon-btn{
-  width:40px;height:40px;border-radius:999px;border:none;background:rgba(255,255,255,0.12);
-  color:white;display:inline-flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;
-  transition:transform .22s, background .22s;
-}
-.icon-btn:hover{transform:scale(1.12);background:rgba(255,255,255,0.22)}
-.device-label{font-size:12px;color:rgba(255,255,255,0.9);margin-left:6px}
+    /* =============== HEADER =============== */
+    header{
+      position:sticky; top:0; z-index:900;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 18px; background:var(--gradient);
+      color:white; box-shadow:var(--shadow);
+    }
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;cursor:pointer}
+    .brand img{width:44px;height:44px;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.25)}
+    .brand .title{font-size:18px}
+    .header-actions{display:flex;align-items:center;gap:10px}
+    .icon-btn{
+      width:40px;height:40px;border-radius:999px;border:none;
+      background:rgba(255,255,255,0.12);color:white;
+      display:inline-flex;align-items:center;justify-content:center;
+      font-size:18px;cursor:pointer;
+      transition:transform .22s, background .22s;
+    }
+    .icon-btn:hover{transform:scale(1.12);background:rgba(255,255,255,0.22)}
+    .device-label{font-size:12px;color:rgba(255,255,255,0.9);margin-left:6px}
 
-/* ================= LAYOUT & SIDEBAR ================= */
-.layout{display:flex;min-height:calc(100vh - 68px)}
-/* Sidebar default (desktop) */
-.sidebar{
-  width:250px;padding:18px;background:var(--glass);backdrop-filter:blur(10px);
-  box-shadow:var(--shadow);position:fixed;top:68px;left:0;bottom:0;overflow:auto;border-radius:0 14px 14px 0;
-}
-.side-section{margin-bottom:18px}
-.side-section h4{margin:0 0 10px 0;color:var(--g1)}
-.side-section ul{list-style:none;padding:0;margin:0}
-.side-section li{
-  background:rgba(255,255,255,0.04);padding:10px 12px;border-radius:10px;margin-bottom:8px;cursor:pointer;
-  transition:all .22s;
-}
-.side-section li:hover{transform:translateX(6px);background:rgba(122,0,255,0.16)}
+    /* =============== LAYOUT =============== */
+    .layout{display:flex;min-height:calc(100vh - 68px)}
 
-/* Drawer for phone mode */
-.drawer{
-  position:fixed; top:68px; left:-320px; width:260px; height:calc(100% - 68px);
-  background:var(--glass); padding:18px; box-shadow:var(--shadow); transition:left .28s;
-  z-index:950; border-radius:0 14px 14px 0;
-}
-.drawer.open{left:0}
+    /* Sidebar */
+    .sidebar{
+      width:250px;padding:18px;background:var(--glass);
+      backdrop-filter:blur(10px); box-shadow:var(--shadow);
+      position:fixed;top:68px;left:0;bottom:0;overflow:auto;
+      border-radius:0 14px 14px 0;
+    }
+    .side-section{margin-bottom:18px}
+    .side-section h4{margin:0 0 10px 0;color:var(--g1)}
+    .side-section ul{list-style:none;padding:0;margin:0}
+    .side-section li{
+      background:rgba(255,255,255,0.04);padding:10px 12px;border-radius:10px;
+      margin-bottom:8px;cursor:pointer;transition:all .22s;
+    }
+    .side-section li:hover{transform:translateX(6px);background:rgba(122,0,255,0.16)}
 
-/* Main content */
-main{margin-left:270px;flex:1;padding:26px;transition:all .25s}
+    /* Drawer */
+    .drawer{
+      position:fixed;top:68px;left:-320px;width:260px;
+      height:calc(100% - 68px);background:var(--glass);
+      padding:18px;box-shadow:var(--shadow);transition:left .28s;
+      z-index:950;border-radius:0 14px 14px 0;
+    }
+    .drawer.open{left:0}
 
-/* Cards */
-.card{
-  background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);border-radius:14px;padding:18px;margin-bottom:20px;
-  box-shadow:var(--shadow);transition:transform .32s, box-shadow .32s;
-  perspective:900;
-}
-.card:hover{transform:translateY(-6px) rotateY(2deg);box-shadow:0 20px 50px rgba(0,0,0,0.28)}
+    /* Main */
+    main{margin-left:270px;flex:1;padding:26px;transition:all .25s}
 
-/* Tables */
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left}
-th{color:var(--g1)}
+    /* Cards */
+    .card{
+      background:rgba(255,255,255,0.06);
+      backdrop-filter:blur(8px);border-radius:14px;
+      padding:18px;margin-bottom:20px;box-shadow:var(--shadow);
+      transition:transform .32s, box-shadow .32s;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 20px 50px rgba(0,0,0,0.28)}
 
-/* Service action area */
-.qty{width:110px;padding:8px;border-radius:8px;border:none}
-.add-btn{background:var(--g1);color:white;border:none;padding:8px 12px;border-radius:10px;cursor:pointer}
-.add-btn:hover{filter:brightness(.95);transform:translateY(-2px)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,0.06);text-align:left}
+    th{color:var(--g1)}
 
-/* ================= CART ================= */
-.cart-btn{
-  position:fixed; top:86px; right:22px; width:52px;height:52px;border-radius:999px;background:#ff5a3c;color:white;
-  box-shadow:0 8px 30px rgba(0,0,0,0.35);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;z-index:1000;
-}
-.cart-badge{
-  position:absolute;top:-6px;right:-6px;background:#ffd43b;color:#111;padding:3px 7px;border-radius:999px;font-size:12px;font-weight:700;
-  box-shadow:0 6px 18px rgba(0,0,0,0.18)
-}
-.cart-popup{
-  position:fixed; top:86px; right:86px; width:360px; max-height:70vh; overflow:auto;
-  background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);padding:14px;border-radius:12px;box-shadow:var(--shadow);z-index:1000;display:none;
-}
-.cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
-.cart-item .remove{background:#ff4d4d;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer}
+    .qty{width:110px;padding:8px;border-radius:8px;border:none}
+    .add-btn{background:var(--g1);color:white;border:none;padding:8px 12px;border-radius:10px;cursor:pointer}
+    .add-btn:hover{filter:brightness(.95);transform:translateY(-2px)}
 
-/* Checkout */
-.checkout-btn{display:block;width:100%;margin-top:12px;padding:10px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--g1),var(--g2));color:white;cursor:pointer}
+    /* Cart */
+    .cart-btn{
+      position:fixed;top:86px;right:22px;
+      width:52px;height:52px;border-radius:999px;
+      background:#ff5a3c;color:white;
+      box-shadow:0 8px 30px rgba(0,0,0,0.35);
+      display:flex;align-items:center;justify-content:center;
+      font-size:22px;cursor:pointer;z-index:1000;
+    }
+    .cart-badge{
+      position:absolute;top:-6px;right:-6px;background:#ffd43b;color:#111;
+      padding:3px 7px;border-radius:999px;font-size:12px;font-weight:700;
+      box-shadow:0 6px 18px rgba(0,0,0,0.18)
+    }
+    .cart-popup{
+      position:fixed;top:86px;right:86px;width:360px;
+      max-height:70vh;overflow:auto;
+      background:rgba(255,255,255,0.06);backdrop-filter:blur(8px);
+      padding:14px;border-radius:12px;box-shadow:var(--shadow);
+      z-index:1000;display:none;
+    }
 
-/* Fly to cart animation element */
-.fly{
-  position:fixed; width:44px;height:44px;border-radius:999px;background:linear-gradient(135deg,#ff7a5a,#ff4268);z-index:2000;pointer-events:none;
-  display:flex;align-items:center;justify-content:center;color:white;font-weight:700;transform-origin:center;
-  transition:transform .8s cubic-bezier(.2,.9,.3,1),opacity .8s;
-}
+    .cart-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+    .cart-item .remove{background:#ff4d4d;color:white;border:none;padding:6px 8px;border-radius:8px;cursor:pointer}
+    .checkout-btn{display:block;width:100%;margin-top:12px;padding:10px;border-radius:10px;border:none;background:linear-gradient(90deg,var(--g1),var(--g2));color:white;cursor:pointer}
 
-/* ================= ORDER POPUP (onboarding) ================= */
-#orderPopup{position:fixed; inset:0; background:rgba(0,0,0,0.6); backdrop-filter:blur(6px); display:flex;align-items:center;justify-content:center;z-index:995;}
-.popup{background:var(--text-light); color:var(--text-dark); border-radius:12px;padding:22px; max-width:420px; width:92%; box-shadow:var(--shadow); text-align:left;}
-.popup h3{margin-top:0}
-.popup .controls{display:flex;gap:10px;justify-content:flex-end;margin-top:14px}
-.lang-switch{padding:6px 10px;border-radius:8px;background:var(--glass-2);cursor:pointer;margin-left:auto;}
+    .fly{
+      position:fixed;width:44px;height:44px;border-radius:999px;
+      background:linear-gradient(135deg,#ff7a5a,#ff4268);
+      z-index:2000;pointer-events:none;
+      display:flex;align-items:center;justify-content:center;
+      color:white;font-weight:700;transform-origin:center;
+      transition:transform .8s cubic-bezier(.2,.9,.3,1),opacity .8s;
+    }
 
-/* ================= DEVICE MODE STYLES (A: manual full) ================= */
-body.device-phone main{margin-left:0;padding:16px}
-body.device-phone .sidebar{display:none}
-body.device-phone .drawer{display:block}
-body.device-phone .card{margin:14px 0}
-body.device-phone table th, body.device-phone table td{font-size:14px}
-body.device-phone .qty{width:120px}
-body.device-phone .add-btn{width:100%}
-body.device-tablet .sidebar{width:200px}
-body.device-tablet main{margin-left:220px}
-body.device-laptop .sidebar{display:block}
-body.device-laptop main{margin-left:270px}
+    /* Note text */
+    .note{font-size:13px;color:rgba(0,0,0,0.6)}
+    body.dark .note{color:rgba(255,255,255,0.7)}
 
-/* ================= RESPONSIVE ================= */
-@media (max-width:900px){
-  .sidebar{display:none}
-  main{margin-left:0;padding:14px}
-  .drawer{left:-320px}
-}
-
-/* small note text */
-.note{font-size:13px;color:rgba(0,0,0,0.6)}
-body.dark .note{color:rgba(255,255,255,0.7)}
-</style>
+    /* Responsive */
+    @media(max-width:900px){
+      .sidebar{display:none}
+      main{margin-left:0;padding:14px}
+    }
+  </style>
 </head>
 <body class="device-laptop">
 
-<!-- ============== SPLASH ============== -->
-<div id="splash">
-  <img class="logo" src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting Logo">
-  <div class="brandText">Zayen Hosting</div>
-  <div class="spinner"></div>
-</div>
+  <!-- Splash -->
+  <div id="splash">
+    <img class="logo" src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting Logo">
+    <div class="brandText">Zayen Hosting</div>
+    <div class="spinner"></div>
+  </div>
 
-<!-- ============== HEADER ============== -->
-<header>
-  <div class="brand"><img src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting"><div class="title">Zayen Hosting</div></div>
-  <div class="header-actions">
-    <div style="display:flex;align-items:center;gap:8px">
-      <button id="deviceToggle" class="icon-btn" title="Mode perangkat (klik untuk ganti)">📱</button>
-      <div class="device-label" id="deviceLabel">Phone</div>
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <img src="https://files.catbox.moe/wgigcs.png" alt="Zayen Hosting">
+      <div class="title">Zayen Hosting</div>
     </div>
-    <button id="themeToggle" class="icon-btn" title="Toggle theme">🌗</button>
-    <div style="position:relative">
+    <div class="header-actions">
+      <button id="themeToggle" class="icon-btn" title="Toggle theme">🌗</button>
       <button id="cartButton" class="cart-btn" title="Keranjang">🛒</button>
       <div id="cartBadge" class="cart-badge" style="display:none">0</div>
     </div>
-  </div>
-</header>
+  </header>
 
-<!-- Drawer for phone -->
-<div id="drawer" class="drawer" aria-hidden="true">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <strong style="color:var(--g1)">Menu</strong>
-    <button id="closeDrawer" class="icon-btn" style="background:transparent;color:white">✕</button>
-  </div>
-  <div class="side-section">
-    <h4>Menu Layanan</h4>
-    <ul>
-      <li data-key="whatsapp">WhatsApp</li>
-      <li data-key="tiktok">TikTok</li>
-      <li data-key="instagram">Instagram</li>
-      <li data-key="facebook">Facebook</li>
-    </ul>
-  </div>
-  <div class="side-section">
-    <h4>Help Menu</h4>
-    <ul>
-      <li id="drawerAdmin">Admin 1</li>
-    </ul>
-    <small class="note">Menu layanan lainnya dapat ditanyakan kepada Admin 1.</small>
-  </div>
-</div>
-
-<!-- Sidebar (desktop & tablet) -->
-<div class="sidebar" aria-hidden="false">
-  <div class="side-section">
-    <h4>Menu Layanan</h4>
-    <ul id="menuList">
-      <li data-key="whatsapp">WhatsApp</li>
-      <li data-key="tiktok">TikTok</li>
-      <li data-key="instagram">Instagram</li>
-      <li data-key="facebook">Facebook</li>
-    </ul>
-  </div>
-
-  <div class="side-section">
-    <h4>Help Menu</h4>
-    <ul>
-      <li id="adminBtn">Admin 1</li>
-    </ul>
-    <small class="note">Menu layanan lainnya dapat ditanyakan kepada Admin 1.</small>
-  </div>
-</div>
-
-<!-- MAIN -->
-<main>
-  <!-- Default welcome -->
-  <div id="welcomeCard" class="card">
-    <h2>Selamat datang di Zayen Hosting</h2>
-    <p>Silakan pilih platform pada <strong>Menu Layanan</strong> untuk melihat jenis layanan dan memulai pemesanan.</p>
-  </div>
-
-  <!-- Service containers (rendered by JS) -->
-  <div id="serviceArea"></div>
-
-  <!-- Payment methods card (no "logo dihilangkan..." text) -->
-  <div class="card" id="paymentCard">
-    <h3>Metode Pembayaran</h3>
-    <p class="note">Silakan pilih metode saat checkout.</p>
-    <table>
-      <tr><td>OVO</td><td>085123231065</td></tr>
-      <tr><td>DANA</td><td>083153044178</td></tr>
-      <tr><td>QRIS</td><td>Kode QR akan dikirim oleh Admin</td></tr>
-    </table>
-  </div>
-</main>
-
-<!-- CART popup -->
-<div id="cartPopup" class="cart-popup" aria-hidden="true">
-  <h4>Keranjang</h4>
-  <div id="cartItemsWrap"></div>
-  <div style="display:flex;justify-content:space-between;margin-top:10px">
-    <strong>Total:</strong><strong id="cartTotal">Rp 0</strong>
-  </div>
-  <button id="checkoutBtn" class="checkout-btn">Checkout via WhatsApp</button>
-</div>
-
-<!-- ORDER POPUP (onboarding) -->
-<div id="orderPopup" aria-hidden="true">
-  <div class="popup" role="dialog" aria-modal="true">
-    <div style="display:flex;align-items:center;gap:10px">
-      <strong id="onboardTitle">Cara Melakukan Pembelian</strong>
-      <div class="lang-switch" id="langSwitch" title="Ganti Bahasa">ID</div>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="side-section">
+      <h4>Menu Layanan</h4>
+      <ul id="menuList">
+        <li data-key="whatsapp">WhatsApp</li>
+        <li data-key="tiktok">TikTok</li>
+        <li data-key="instagram">Instagram</li>
+        <li data-key="facebook">Facebook</li>
+      </ul>
     </div>
-    <div id="onboardContent" style="margin-top:12px">
-      <p id="onboardText">Langkah 1 — Pilih platform pada menu layanan, lalu pilih jenis layanan di daftar.</p>
-      <ol style="margin-top:8px;margin-left:18px">
-        <li>Pilih platform</li>
-        <li>Pilih jenis layanan & masukkan jumlah</li>
-        <li>Tambahkan ke keranjang & checkout</li>
-      </ol>
-    </div>
-
-    <div class="controls" style="margin-top:14px;display:flex;justify-content:flex-end;gap:8px">
-      <button id="skipOnboard" class="popup-btn" style="background:#bbb;color:#000">Lewati</button>
-      <button id="nextOnboard" class="popup-btn">Berikutnya</button>
+    <div class="side-section">
+      <h4>Help Menu</h4>
+      <ul><li id="adminBtn">Admin 1</li></ul>
+      <small class="note">Menu layanan lainnya dapat ditanyakan kepada Admin 1.</small>
     </div>
   </div>
-</div>
 
-<script>
-/* ================= DATA: platforms -> services ================= */
-const PLATFORMS = {
-  whatsapp: {
-    label: 'WhatsApp',
-    icon: '💬',
-    services: [
-      {name:'Member Saluran WhatsApp', price:38, min:10, max:50000},
-      {name:'Post Reaction WhatsApp', price:35, min:10, max:50000}
-    ]
-  },
-  tiktok: {
-    label:'TikTok', icon:'🎵',
-    services:[
-      {name:'TikTok Views', price:8, min:100, max:2147483647},
-      {name:'TikTok Like', price:8, min:10, max:30000},
-      {name:'TikTok Followers', price:25, min:10, max:5000000},
-      {name:'TikTok Favorite/Save', price:20, min:100, max:3000},
-      {name:'TikTok Share', price:3, min:10, max:2147483647}
-    ]
-  },
-  instagram: {
-    label:'Instagram', icon:'📸',
-    services:[
-      {name:'Instagram Followers', price:20, min:10, max:100000},
-      {name:'Instagram Save', price:4, min:10, max:200000},
-      {name:'Instagram Repost', price:12, min:1, max:100000},
-      {name:'Instagram Video Views', price:3, min:100, max:100000}
-    ]
-  },
-  facebook: {
-    label:'Facebook', icon:'📘',
-    services:[
-      {name:'Facebook Followers', price:10, min:10, max:500000},
-      {name:'Facebook Like Post', price:8, min:50, max:50000},
-      {name:'Facebook Video Views', price:3, min:100, max:10000000},
-      {name:'Facebook Reels Views', price:3, min:100, max:10000000}
-    ]
-  }
-};
-
-/* ================= APP STATE ================= */
-let cart = []; // {platform,name,price,qty,total}
-let currentPlatform = null;
-const ADMIN_WA = '6283153044178'; // WhatsApp admin
-
-/* ================= HELPERS ================= */
-function formatRp(num){
-  if(!num && num !== 0) return '0';
-  return new Intl.NumberFormat('id-ID').format(num);
-}
-
-/* ================= RENDER: service area ================= */
-const serviceArea = document.getElementById('serviceArea');
-function renderServiceList(platformKey){
-  currentPlatform = platformKey;
-  const plat = PLATFORMS[platformKey];
-  serviceArea.innerHTML = '';
-  const header = document.createElement('div'); header.className='card';
-  header.innerHTML = `<h2>${plat.icon} ${plat.label} Services</h2>
-    <p class="note">Pilih layanan, masukkan jumlah sesuai minimal/maksimal, lalu tekan "Tambahkan ke Keranjang".</p>`;
-  serviceArea.appendChild(header);
-
-  // table-like cards for each service
-  plat.services.forEach((s, idx) => {
-    const c = document.createElement('div'); c.className='card';
-    c.innerHTML = `<div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
-      <div style="flex:1;min-width:220px">
-        <div style="font-weight:600">${s.name}</div>
-        <div class="note">Rp ${formatRp(s.price)} · Min: ${formatRp(s.min)} · Max: ${formatRp(s.max)}</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px">
-        <input class="qty" type="number" min="${s.min}" max="${s.max}" value="${s.min}" data-plat="${platformKey}" data-idx="${idx}" aria-label="jumlah">
-        <button class="add-btn" data-plat="${platformKey}" data-idx="${idx}">Tambahkan ke Keranjang</button>
-      </div>
+  <!-- Main -->
+  <main>
+    <div id="welcomeCard" class="card">
+      <h2>Selamat datang di Zayen Hosting</h2>
+      <p>Silakan pilih platform pada <strong>Menu Layanan</strong> untuk melihat jenis layanan dan memulai pemesanan.</p>
     </div>
-    <div class="warning" style="margin-top:8px;display:none;color:#ff6b6b"></div>`;
-    serviceArea.appendChild(c);
-  });
+    <div id="serviceArea"></div>
+    <div class="card" id="paymentCard">
+      <h3>Metode Pembayaran</h3>
+      <p class="note">Silakan pilih metode saat checkout.</p>
+      <table>
+        <tr><td>OVO</td><td>085123231065</td></tr>
+        <tr><td>DANA</td><td>083153044178</td></tr>
+        <tr><td>QRIS</td><td>Kode QR akan dikirim oleh Admin</td></tr>
+      </table>
+    </div>
+  </main>
 
-  // smooth scroll to services
-  header.scrollIntoView({behavior:'smooth', block:'start'});
-}
+  <!-- Cart Popup -->
+  <div id="cartPopup" class="cart-popup">
+    <h4>Keranjang</h4>
+    <div id="cartItemsWrap"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:10px">
+      <strong>Total:</strong><strong id="cartTotal">Rp 0</strong>
+    </div>
+    <button id="checkoutBtn" class="checkout-btn">Checkout via WhatsApp</button>
+  </div>
 
-/* ================ ADD TO CART (event delegation) ================ */
-serviceArea.addEventListener('click', function(e){
-  const target = e.target;
-  if(target.classList.contains('add-btn')){
-    const plat = target.dataset.plat;
-    const idx = parseInt(target.dataset.idx);
-    const input = document.querySelector(`input[data-plat="${plat}"][data-idx="${idx}"]`);
-    const qty = parseInt(input.value || 0);
-    const service = PLATFORMS[plat].services[idx];
-    const warningEl = target.closest('.card').querySelector('.warning');
+  <script>
+    const PLATFORMS = {
+      whatsapp: { label: 'WhatsApp', icon: '💬', services: [{name:'Member Saluran WhatsApp',price:38,min:10,max:50000},{name:'Post Reaction WhatsApp',price:35,min:10,max:50000}] },
+      tiktok: { label:'TikTok', icon:'🎵', services:[{name:'TikTok Views',price:8,min:100,max:2147483647},{name:'TikTok Like',price:8,min:10,max:30000},{name:'TikTok Followers',price:25,min:10,max:5000000},{name:'TikTok Share',price:3,min:10,max:2147483647}] },
+      instagram: { label:'Instagram', icon:'📸', services:[{name:'Instagram Followers',price:20,min:10,max:100000},{name:'Instagram Save',price:4,min:10,max:200000}] },
+      facebook: { label:'Facebook', icon:'📘', services:[{name:'Facebook Followers',price:10,min:10,max:500000},{name:'Facebook Like Post',price:8,min:50,max:50000}] }
+    };
+    const ADMIN_WA='6283153044178';
+    let cart=[];
 
-    if(isNaN(qty) || qty < service.min){
-      warningEl.style.display='block'; warningEl.innerText = `Minimal pembelian ${service.min}`;
-      return;
+    const serviceArea=document.getElementById('serviceArea');
+    function formatRp(num){return new Intl.NumberFormat('id-ID').format(num);}
+
+    function renderServiceList(platformKey){
+      const plat=PLATFORMS[platformKey];
+      serviceArea.innerHTML='';
+      const header=document.createElement('div');
+      header.className='card';
+      header.innerHTML=`<h2>${plat.icon} ${plat.label}</h2><p class="note">Pilih layanan, masukkan jumlah sesuai minimal/maksimal, lalu tekan "Tambahkan ke Keranjang".</p>`;
+      serviceArea.appendChild(header);
+
+      plat.services.forEach((s,idx)=>{
+        const c=document.createElement('div');
+        c.className='card';
+        c.innerHTML=`
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px">
+          <div style="flex:1;min-width:220px">
+            <div style="font-weight:600">${s.name}</div>
+            <div class="note">Rp ${formatRp(s.price)} · Min: ${formatRp(s.min)} · Max: ${formatRp(s.max)}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input class="qty" type="number" min="${s.min}" max="${s.max}" value="${s.min}" data-plat="${platformKey}" data-idx="${idx}">
+            <button class="add-btn" data-plat="${platformKey}" data-idx="${idx}">Tambahkan ke Keranjang</button>
+          </div>
+        </div>
+        <div class="warning" style="margin-top:8px;display:none;color:#ff6b6b"></div>`;
+        serviceArea.appendChild(c);
+      });
     }
-    if(qty > service.max){
-      warningEl.style.display='block'; warningEl.innerText = `Maksimal pembelian ${service.max}`;
-      return;
+
+    serviceArea.addEventListener('click',e=>{
+      const t=e.target;
+      if(t.classList.contains('add-btn')){
+        const plat=t.dataset.plat;
+        const idx=parseInt(t.dataset.idx);
+        const input=document.querySelector(`input[data-plat="${plat}"][data-idx="${idx}"]`);
+        const qty=parseInt(input.value||0);
+        const s=PLATFORMS[plat].services[idx];
+        const w=t.closest('.card').querySelector('.warning');
+        if(isNaN(qty)||qty<s.min){w.style.display='block';w.innerText=`Minimal pembelian ${s.min}`;return;}
+        if(qty>s.max){w.style.display='block';w.innerText=`Maksimal pembelian ${s.max}`;return;}
+        w.style.display='none';
+        const existing=cart.find(it=>it.platform===plat&&it.name===s.name);
+        const total=qty*s.price;
+        if(existing){existing.qty=qty;existing.total=total;}else{cart.push({platform:plat,name:s.name,price:s.price,qty,total});}
+        renderCart();
+      }
+    });
+
+    function renderCart(){
+      const wrap=document.getElementById('cartItemsWrap');
+      const badge=document.getElementById('cartBadge');
+      wrap.innerHTML='';
+      if(cart.length===0){wrap.innerHTML=`<div class="note">Keranjang kosong</div>`;badge.style.display='none';document.getElementById('cartTotal').innerText='Rp 0';return;}
+      let sum=0;
+      cart.forEach((it,i)=>{
+        sum+=it.total;
+        const row=document.createElement('div');
+        row.className='cart-item';
+        row.innerHTML=`<div><div style="font-weight:600">${it.name}</div><div class="note">${PLATFORMS[it.platform].label} · x${it.qty}</div></div>
+        <div style="text-align:right"><div>Rp ${formatRp(it.total)}</div><button class="remove" onclick="removeCart(${i})">Hapus</button></div>`;
+        wrap.appendChild(row);
+      });
+      document.getElementById('cartTotal').innerText='Rp '+formatRp(sum);
+      badge.innerText=cart.length;badge.style.display='block';
     }
-    warningEl.style.display='none';
+    function removeCart(i){cart.splice(i,1);renderCart();}
 
-    // add/update cart
-    const existing = cart.find(it=>it.platform===plat && it.name===service.name);
-    const total = qty * service.price;
-    if(existing){
-      existing.qty = qty;
-      existing.total = total;
-    } else {
-      cart.push({platform:plat,name:service.name,price:service.price,qty,total});
-    }
-    renderCart();
-    animateFlyToCart(input);
-  }
-});
+    document.getElementById('cartButton').onclick=()=>{document.getElementById('cartPopup').style.display=document.getElementById('cartPopup').style.display==='block'?'none':'block';};
 
-/* ================ FLY TO CART ANIMATION ================ */
-function animateFlyToCart(sourceEl){
-  const rect = sourceEl.getBoundingClientRect();
-  const fly = document.createElement('div'); fly.className='fly'; fly.innerText='🛒';
-  document.body.appendChild(fly);
-  fly.style.left = rect.left + 'px';
-  fly.style.top = rect.top + 'px';
-  const cartBtn = document.getElementById('cartButton').getBoundingClientRect();
-  requestAnimationFrame(()=>{
-    fly.style.transform = `translate(${cartBtn.left - rect.left}px, ${cartBtn.top - rect.top}px) scale(.22)`;
-    fly.style.opacity = '0';
-  });
-  setTimeout(()=>fly.remove(),850);
-}
+    document.getElementById('checkoutBtn').onclick=()=>{
+      if(cart.length===0)return alert('Keranjang masih kosong!');
+      const total=cart.reduce((a,b)=>a+b.total,0);
+      let msg='Halo min, saya ingin memesan layanan berikut:%0A%0A';
+      cart.forEach(it=>{
+        msg+=`• ${PLATFORMS[it.platform].label} - ${it.name}%0AJumlah: ${it.qty}%0AHarga: Rp ${formatRp(it.total)}%0A%0A`;
+      });
+      msg+=`Total: Rp ${formatRp(total)}%0A%0AMetode pembayaran: (silakan isi sendiri)%0AQRIS: (nanti dikirim admin)%0A%0ATolong konfirmasinya min 🙏`;
+      window.open(`https://wa.me/${ADMIN_WA}?text=${msg}`,'_blank');
+    };
 
-/* ================ CART RENDER ================ */
-function renderCart(){
-  const wrap = document.getElementById('cartItemsWrap');
-  const badge = document.getElementById('cartBadge');
-  wrap.innerHTML='';
-  if(cart.length===0){
-    wrap.innerHTML=`<div class="note">Keranjang kosong</div>`;
-    badge.style.display='none';
-    document.getElementById('cartTotal').innerText='Rp 0';
-    return;
-  }
-  let totalSum = 0;
-  cart.forEach((it, i)=>{
-    totalSum += it.total;
-    const row = document.createElement('div'); row.className='cart-item';
-    row.innerHTML = `<div style="max-width:65%"><div style="font-weight:600">${it.name}</div><div class="note">${PLATFORMS[it.platform].label} · x${it.qty}</div></div>
-      <div style="text-align:right"><div style="font-weight:700">Rp ${formatRp(it.total)}</div>
-      <button class="remove" onclick="removeCart(${i})">Hapus</button></div>`;
-    wrap.appendChild(row);
-  });
-  document.getElementById('cartTotal').innerText = 'Rp ' + formatRp(totalSum);
-  badge.style.display='block'; badge.innerText = cart.length;
-}
+    document.querySelectorAll('#menuList li').forEach(li=>li.onclick=()=>renderServiceList(li.dataset.key));
 
-/* ================ REMOVE CART ITEM ================ */
-function removeCart(idx){
-  cart.splice(idx,1); renderCart();
-}
+    document.getElementById('themeToggle').onclick=()=>document.body.classList.toggle('dark');
 
-/* ================ CART POPUP / CHECKOUT ================ */
-const cartButton = document.getElementById('cartButton'); const cartPopup = document.getElementById('cartPopup');
-cartButton.addEventListener('click', ()=>{ cartPopup.style.display = cartPopup.style.display==='block'?'none':'block'; renderCart(); });
-
-document.getElementById('checkoutBtn').addEventListener('click', ()=>{
-  if(cart.length===0){ alert('Keranjang kosong!'); return; }
-  // build message and open wa
-  let totalSum = 0; let msg = `Halo Admin Zayen Hosting, saya ingin memesan layanan:\n`;
-  cart.forEach(it=>{ msg += `- ${it.name} (${PLATFORMS[it.platform].label}) x${it.qty} = Rp ${formatRp(it.total)}\n`; totalSum += it.total; });
-  msg += `Total: Rp ${formatRp(totalSum)}`;
-  // open WA
-  window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(msg)}`, '_blank');
-  // leave payment card & page intact (do not remove payment methods)
-  // keep cart popup open state same or close (we close for clarity)
-  cartPopup.style.display='none';
-});
-
-/* ================ MENU CLICK HANDLERS (sidebar + drawer) ================ */
-document.getElementById('menuList').querySelectorAll('li').forEach(li=>{
-  li.addEventListener('click', ()=>{ const key=li.dataset.key; if(key) renderServiceList(key); });
-});
-document.getElementById('drawer').querySelectorAll('li').forEach(li=>{
-  li.addEventListener('click', ()=>{ const key=li.dataset.key; if(key) renderServiceList(key); toggleDrawer(false); });
-});
-
-/* admin buttons */
-document.getElementById('adminBtn').addEventListener('click', ()=>contactAdmin());
-document.getElementById('drawerAdmin').addEventListener('click', ()=>{ contactAdmin(); toggleDrawer(false); });
-
-/* ================ DRAWER (phone) ================= */
-const drawer = document.getElementById('drawer');
-function toggleDrawer(open){
-  if(open) drawer.classList.add('open'); else drawer.classList.remove('open');
-}
-document.getElementById('closeDrawer').addEventListener('click', ()=>toggleDrawer(false));
-
-/* ================ THEME TOGGLE ================= */
-const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', ()=>{ document.body.classList.toggle('dark'); });
-
-/* ================ DEVICE MODE (A: manual full) ================= */
-const deviceToggle = document.getElementById('deviceToggle');
-const deviceLabel = document.getElementById('deviceLabel');
-let deviceState = 'phone'; // phone / tablet / laptop
-function applyDeviceMode(state){
-  document.body.classList.remove('device-phone','device-tablet','device-laptop');
-  if(state==='phone'){ document.body.classList.add('device-phone'); deviceToggle.textContent='📱'; deviceLabel.innerText='Phone'; }
-  else if(state==='tablet'){ document.body.classList.add('device-tablet'); deviceToggle.textContent='📟'; deviceLabel.innerText='Tablet'; }
-  else { document.body.classList.add('device-laptop'); deviceToggle.textContent='💻'; deviceLabel.innerText='Laptop'; }
-}
-deviceToggle.addEventListener('click', ()=>{
-  if(deviceState==='phone') deviceState='tablet';
-  else if(deviceState==='tablet') deviceState='laptop';
-  else deviceState='phone';
-  applyDeviceMode(deviceState);
-  if(deviceState==='phone') toggleDrawer(true); else toggleDrawer(false);
-});
-applyDeviceMode(deviceState);
-
-/* ================ ONBOARDING POPUP (bilingual) ================= */
-const orderPopup = document.getElementById('orderPopup');
-const langSwitch = document.getElementById('langSwitch');
-const onboardText = document.getElementById('onboardText');
-const nextOnboard = document.getElementById('nextOnboard');
-const skipOnboard = document.getElementById('skipOnboard');
-let onboardStep = 1; let lang='id';
-const ONBOARD = {
-  id:[
-    {title:'Langkah 1 — Pilih Platform', text:'Pilih platform pada menu layanan (WhatsApp, TikTok, Instagram, Facebook).'},
-    {title:'Langkah 2 — Pilih Jenis Layanan', text:'Pilih layanan spesifik lalu masukkan jumlah sesuai minimal/maksimal.'},
-    {title:'Langkah 3 — Checkout', text:'Tambahkan ke keranjang. Tekan Checkout untuk menghubungi Admin lewat WhatsApp.'}
-  ],
-  en:[
-    {title:'Step 1 — Choose Platform', text:'Select a platform (WhatsApp, TikTok, Instagram, Facebook).'},
-    {title:'Step 2 — Choose Service', text:'Choose a specific service and enter quantity within min/max limits.'},
-    {title:'Step 3 — Checkout', text:'Add to cart. Press Checkout to contact Admin via WhatsApp.'}
-  ]
-};
-
-function showOnboard(){
-  if(localStorage.getItem('zayen_onboard_seen')){ orderPopup.style.display='none'; return; }
-  orderPopup.style.display='flex';
-  renderOnboard();
-}
-function renderOnboard(){
-  const data = ONBOARD[lang][onboardStep-1];
-  document.getElementById('onboardTitle').innerText = data.title;
-  document.getElementById('onboardText').innerText = data.text;
-  nextOnboard.innerText = (lang==='id') ? (onboardStep<3 ? 'Berikutnya' : 'Mulai Sekarang') : (onboardStep<3 ? 'Next' : 'Start Now');
-  skipOnboard.innerText = (lang==='id') ? 'Lewati' : 'Skip';
-  langSwitch.innerText = lang.toUpperCase();
-}
-langSwitch.addEventListener('click', ()=>{ lang = (lang==='id') ? 'en' : 'id'; renderOnboard(); });
-nextOnboard.addEventListener('click', ()=>{ if(onboardStep<3){ onboardStep++; renderOnboard(); return;} localStorage.setItem('zayen_onboard_seen','1'); orderPopup.style.display='none'; });
-skipOnboard.addEventListener('click', ()=>{ localStorage.setItem('zayen_onboard_seen','1'); orderPopup.style.display='none'; });
-showOnboard();
-
-/* ================ SPLASH TIMING (adaptive) ================= */
-window.addEventListener('load', ()=>{
-  const u = navigator.userAgent || '';
-  const isMobile = /Mobi|Android/i.test(u);
-  const duration = isMobile ? 5000 : 7000; // 5s mobile, 7s desktop
-  setTimeout(()=>{ const sp = document.getElementById('splash'); if(sp) sp.style.display='none'; }, duration);
-});
-
-/* ================ INITIALIZE ================ */
-renderCart(); // empty cart initially
-
-/* ================= ADMIN CONTACT ================= */
-function contactAdmin(){ window.open(`https://wa.me/${ADMIN_WA}`, '_blank'); }
-
-/* optional: brand click opens drawer on phone for convenience */
-document.querySelector('.brand').addEventListener('click', ()=>{ if(deviceState==='phone') toggleDrawer(true); });
-</script>
+    window.addEventListener('load',()=>{setTimeout(()=>{document.getElementById('splash').style.opacity='0';setTimeout(()=>document.getElementById('splash').remove(),600);},2800);});
+  </script>
 </body>
 </html>
+>
